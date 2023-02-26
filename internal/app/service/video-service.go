@@ -1,6 +1,6 @@
 package service
 
-import "github.com/eugeniusms/poseidon/entity"
+import "github.com/rumbel/belajar/internal/app/entity"
 
 type VideoService interface {
 	Save(entity.Video) entity.Video

@@ -1,1 +1,33 @@
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+*.so
+
+# Folders
+_vendor/
+vendor/
+node_modules/
+
+# Go specific
+*.exe
+*.test
+*.prof
+*.out
+*.cgo1.go
+*.cgo2.c
+_cgo_defun.c
+_cgo_gotypes.go
+_cgo_export.*.go
+*.test.go
+*.testmain.go
+
+# Gin specific
+/.air
+/.idea
+
+# Other
 .DS_Store
+.env
+
+# air
+tmp

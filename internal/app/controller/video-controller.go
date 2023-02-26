@@ -3,11 +3,11 @@ package controller
 import (
 	"net/http"
 
-	"github.com/eugeniusms/poseidon/entity"
-	"github.com/eugeniusms/poseidon/service"
-	"github.com/eugeniusms/poseidon/validators"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/rumbel/belajar/internal/app/entity"
+	"github.com/rumbel/belajar/internal/app/service"
+	"github.com/rumbel/belajar/pkg/validators"
 )
 
 type VideoController interface {
@@ -35,7 +35,7 @@ func (c *controller) FindAll() []entity.Video {
 }
 
 func (c *controller) Save(ctx *gin.Context) error {
-	var video entity.Video 
+	var video entity.Video
 	err := ctx.ShouldBindJSON(&video)
 	if err != nil {
 		return err
@@ -51,7 +51,7 @@ func (c *controller) Save(ctx *gin.Context) error {
 func (c *controller) ShowAll(ctx *gin.Context) {
 	videos := c.service.FindAll()
 	data := gin.H{
-		"title": "Video Page",
+		"title":  "Video Page",
 		"videos": videos,
 	}
 	ctx.HTML(http.StatusOK, "index.html", data)
