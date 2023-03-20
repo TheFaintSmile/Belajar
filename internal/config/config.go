@@ -39,7 +39,7 @@ func LoadConfig() *Config {
 		log.Fatal("\nError loading config: \n", err)
 	}
 
-	if port := os.Getenv("PORT"); port != "" {
+	if port := os.Getenv("SERVER_PORT"); port != "" {
 		cfg.ServerPort = port
 	}
 
