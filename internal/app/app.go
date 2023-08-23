@@ -8,6 +8,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/rumbel/belajar/internal/app/middlewares"
 	"github.com/rumbel/belajar/internal/app/routes"
 	"github.com/rumbel/belajar/internal/config"
 	// "github.com/jinzhu/gorm"
@@ -39,6 +40,7 @@ func NewApp() *App {
 
 	router := gin.Default()
 	router.Use(gin.Recovery())
+	router.Use(middlewares.LogRequest)
 	api := router.Group("/api")
 
 	return &App{
@@ -61,6 +63,7 @@ func (a *App) Run() {
 	a.router.SetTrustedProxies(nil)
 	serverPort := fmt.Sprintf(":%s", a.config.ServerPort)
 	routes.TestRoutes(a.api)
+	routes.AuthRoutes(a.api)
 
 	a.router.Run(serverPort)
 }
