@@ -1,19 +1,20 @@
 package routes
 
 import (
-	"io/ioutil"
-
 	"github.com/gin-gonic/gin"
 	controller "github.com/rumbel/belajar/internal/app/controller/auth"
 	"github.com/rumbel/belajar/internal/app/service"
+	"github.com/jinzhu/gorm"
+	
 )
 
 var (
-	authService service.AuthService = service.NewAuthService()
-	authController controller.AuthController = controller.NewAuthController(authService)
+    authService    service.AuthService    = service.NewAuthService()
 )
 
-func AuthRoutes(api *gin.RouterGroup) {
+func AuthRoutes(api *gin.RouterGroup, db *gorm.DB) {
+	authController := controller.NewAuthController(authService, db)
+	
 	auth := api.Group("/auth")
 	{
 		// test endpoint
@@ -31,11 +32,8 @@ func AuthRoutes(api *gin.RouterGroup) {
 				})
 				return
 			}
-			// Log the entire request details
-			data, _ := ioutil.ReadAll(ctx.Request.Body)
 			ctx.JSON(200, gin.H{
-				"message": "success",
-				"data": data,
+				"message": "registration success",
 			})
 		})
 	}
