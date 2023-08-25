@@ -13,6 +13,7 @@ import (
 
 type AuthController interface {
 	Register(ctx *gin.Context) error
+	Login(ctx *gin.Context) (string, error)
 }
 
 type authController struct {
@@ -43,4 +44,25 @@ func (c *authController) Register(ctx *gin.Context) error {
 	}
 	c.service.Register(user)
 	return nil
+}
+
+type LoginInput struct {
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+func (c *authController) Login(ctx *gin.Context) (string, error) {
+	var input LoginInput
+	err := ctx.ShouldBindJSON(&input)
+	if err != nil {
+		return "",err
+	}
+	u := entity.User{}
+	u.Email = input.Email
+	u.Password = input.Password
+
+	token, err := c.service.Login(u)
+	if err != nil {
+		return "", err
+	}
+	return token, nil
 }

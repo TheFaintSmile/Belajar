@@ -8,6 +8,7 @@ import (
 
 type AuthService interface {
 	Register(entity.User) entity.User
+	Login(entity.User) (string, error)
 }
 
 type authService struct {
@@ -35,4 +36,12 @@ func (service *authService) Register(user entity.User) entity.User {
 
 	service.users = append(service.users, user)
 	return user
+}
+
+func (service *authService) Login(user entity.User) (string, error) {
+	token, err := entity.LoginCheck(user.Email, user.Password)
+	if err != nil {
+		return "", err
+	}
+	return token, nil
 }
