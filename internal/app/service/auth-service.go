@@ -4,6 +4,7 @@ import (
 	// "log"
 	"fmt"
 	"strings"
+	"net/mail"
 
 	"github.com/rumbel/belajar/internal/app/entity"
 	"github.com/rumbel/belajar/internal/app/utils"
@@ -30,6 +31,9 @@ func (service *authService) Register(user entity.User) (string, error) {
 	}
 	if service.checkNameExists(user.FirstName, user.LastName) {
 		return "", fmt.Errorf("name already exists")
+	}
+	if !service.isValidEmail(user.Email) {
+		return "", fmt.Errorf("invalid email")
 	}
 	if service.containsWhiteSpace(user.Password) {
 		return "", fmt.Errorf("password cannot contain whitespace")
@@ -59,6 +63,7 @@ func (service *authService) Login(user entity.User) (string, error) {
 	return token, nil
 }
 
+//* CONSIDERING: move these helper functions to utils package
 func (service *authService) checkEmailExists(email string) bool {
 	var u entity.User
 	err := utils.DB.Model(&entity.User{}).Where("email = ?", email).Take(&u).Error
@@ -79,4 +84,9 @@ func (service *authService) checkNameExists(fname string, lname string) bool {
 
 func (service *authService) containsWhiteSpace(password string) bool {
 	return strings.Contains(password, " ")
+}
+
+func (service *authService) isValidEmail(email string) bool {
+	_, err := mail.ParseAddress(email)
+	return err == nil
 }
