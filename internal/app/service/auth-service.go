@@ -3,6 +3,7 @@ package service
 import (
 	// "log"
 	"fmt"
+	"strings"
 
 	"github.com/rumbel/belajar/internal/app/entity"
 	"github.com/rumbel/belajar/internal/app/utils"
@@ -29,6 +30,9 @@ func (service *authService) Register(user entity.User) (string, error) {
 	}
 	if service.checkNameExists(user.FirstName, user.LastName) {
 		return "", fmt.Errorf("name already exists")
+	}
+	if service.containsWhiteSpace(user.Password) {
+		return "", fmt.Errorf("password cannot contain whitespace")
 	}
 
 	u := entity.User{}
@@ -71,4 +75,8 @@ func (service *authService) checkNameExists(fname string, lname string) bool {
 		return false
 	}
 	return true
+}
+
+func (service *authService) containsWhiteSpace(password string) bool {
+	return strings.Contains(password, " ")
 }
