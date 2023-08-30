@@ -42,7 +42,10 @@ func (c *authController) Register(ctx *gin.Context) error {
 	if err != nil {
 		return err
 	}
-	c.service.Register(user)
+	_, err = c.service.Register(user)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

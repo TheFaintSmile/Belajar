@@ -2,12 +2,14 @@ package service
 
 import (
 	// "log"
+	"fmt"
 
 	"github.com/rumbel/belajar/internal/app/entity"
+	"github.com/rumbel/belajar/internal/app/utils"
 )
 
 type AuthService interface {
-	Register(entity.User) entity.User
+	Register(entity.User) (string, error)
 	Login(entity.User) (string, error)
 }
 
@@ -21,7 +23,11 @@ func NewAuthService() AuthService {
 	}
 }
 
-func (service *authService) Register(user entity.User) entity.User {
+func (service *authService) Register(user entity.User) (string, error) {
+	if service.checkUserExists(user.Email) {
+		return "", fmt.Errorf("email already exists")
+	}
+
 	u := entity.User{}
 	u.FirstName = user.FirstName
 	u.LastName = user.LastName
@@ -31,11 +37,11 @@ func (service *authService) Register(user entity.User) entity.User {
 
 	_, err := u.SaveUser()
 	if err != nil {
-		return entity.User{}
+		return "", err
 	}
 
 	service.users = append(service.users, user)
-	return user
+	return "success", nil
 }
 
 func (service *authService) Login(user entity.User) (string, error) {
@@ -44,4 +50,13 @@ func (service *authService) Login(user entity.User) (string, error) {
 		return "", err
 	}
 	return token, nil
+}
+
+func (service *authService) checkUserExists(email string) bool {
+	var u entity.User
+	err := utils.DB.Model(&entity.User{}).Where("email = ?", email).Take(&u).Error
+	if err != nil {
+		return false
+	}
+	return true
 }
