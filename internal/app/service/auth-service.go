@@ -24,8 +24,11 @@ func NewAuthService() AuthService {
 }
 
 func (service *authService) Register(user entity.User) (string, error) {
-	if service.checkUserExists(user.Email) {
+	if service.checkEmailExists(user.Email) {
 		return "", fmt.Errorf("email already exists")
+	}
+	if service.checkNameExists(user.FirstName, user.LastName) {
+		return "", fmt.Errorf("name already exists")
 	}
 
 	u := entity.User{}
@@ -52,9 +55,18 @@ func (service *authService) Login(user entity.User) (string, error) {
 	return token, nil
 }
 
-func (service *authService) checkUserExists(email string) bool {
+func (service *authService) checkEmailExists(email string) bool {
 	var u entity.User
 	err := utils.DB.Model(&entity.User{}).Where("email = ?", email).Take(&u).Error
+	if err != nil {
+		return false
+	}
+	return true
+}
+
+func (service *authService) checkNameExists(fname string, lname string) bool {
+	var u entity.User
+	err := utils.DB.Model(&entity.User{}).Where("first_name = ? AND last_name = ?", fname, lname).Take(&u).Error
 	if err != nil {
 		return false
 	}
