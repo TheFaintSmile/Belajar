@@ -6,8 +6,8 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/joho/godotenv"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
