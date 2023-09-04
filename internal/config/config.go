@@ -1,11 +1,13 @@
 package config
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strconv"
 
 	"github.com/joho/godotenv"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 type Config struct {
@@ -71,7 +73,8 @@ func LoadConfig() *Config {
 }
 
 func (cfg *Config) GetDSN() string {
-	return cfg.DatabaseUser + ":" + cfg.DatabasePassword + "@tcp(" + cfg.DatabaseHost + ":" + cfg.DatabasePort + ")/" + cfg.DatabaseName
+	return fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", cfg.DatabaseHost, cfg.DatabasePort, cfg.DatabaseUser, cfg.DatabaseName, cfg.DatabasePassword)
+	// return cfg.DatabaseUser + ":" + cfg.DatabasePassword + "@tcp(" + cfg.DatabaseHost + ":" + cfg.DatabasePort + ")/" + cfg.DatabaseName
 }
 
 func (cfg *Config) GetServerPort() int {
