@@ -33,6 +33,17 @@ type User struct {
 }
 
 func (u *User) SaveUser() (*User, error) {
+	validLevels := []UserLevel{LevelSD1, LevelSD2, LevelSD3, LevelSD4, LevelSD5, LevelSD6, LevelSMP, LevelSMA}
+    isValidLevel := false
+    for _, level := range validLevels {
+        if u.Level == level {
+            isValidLevel = true
+            break
+        }
+    }
+	if !isValidLevel {
+        return nil, fmt.Errorf("Invalid user level")
+    }
 	err := utils.DB.Create(&u).Error	
 	if err != nil {
 		return &User{}, err
