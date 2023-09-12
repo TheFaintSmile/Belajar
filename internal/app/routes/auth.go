@@ -17,27 +17,29 @@ func AuthRoutes(api *gin.RouterGroup, db *gorm.DB) {
 
 	auth := api.Group("/auth")
 	{
-		// test endpoint
-		auth.GET("/", func(ctx *gin.Context) {
-			utils.SuccessResponse(ctx, "This is the auth endpoint", nil)
-		})
-		// register endpoint
-		auth.POST("/register", func(ctx *gin.Context) {
-			err := authController.Register(ctx)
-			if err != nil {
-				utils.ErrorResponse(ctx, err.Error(), nil)
-				return
-			}
-			utils.SuccessResponse(ctx, "Registration success", nil)
-		})
-		// login endpoint
-		auth.POST("/login", func(ctx *gin.Context) {
-			token, err := authController.Login(ctx)
-			if err != nil {
-				utils.ErrorResponse(ctx, err.Error(), nil)
-				return
-			}
-			utils.SuccessResponse(ctx, "Login success", gin.H{"token": token})
-		})
+		auth.POST("/register", Register(authController))
+		auth.POST("/login", Login(authController))
+	}
+}
+
+func Register(authController controller.AuthController) gin.HandlerFunc {
+    return func(ctx *gin.Context) {
+        err := authController.Register(ctx)
+        if err != nil {
+            utils.ErrorResponse(ctx, err.Error(), nil)
+            return
+        }
+        utils.SuccessResponse(ctx, "Registration success", nil)
+    }
+}
+
+func Login(authController controller.AuthController) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		token, err := authController.Login(ctx)
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
+		utils.SuccessResponse(ctx, "Login success", gin.H{"token": token})
 	}
 }
