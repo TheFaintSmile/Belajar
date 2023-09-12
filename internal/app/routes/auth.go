@@ -19,25 +19,25 @@ func AuthRoutes(api *gin.RouterGroup, db *gorm.DB) {
 	{
 		// test endpoint
 		auth.GET("/", func(ctx *gin.Context) {
-			utils.SendResponse(ctx, 200, "This is the auth endpoint", nil)
+			utils.SuccessResponse(ctx, "This is the auth endpoint", nil)
 		})
 		// register endpoint
 		auth.POST("/register", func(ctx *gin.Context) {
 			err := authController.Register(ctx)
 			if err != nil {
-				utils.SendResponse(ctx, 400, err.Error(), nil)
+				utils.ErrorResponse(ctx, err.Error(), nil)
 				return
 			}
-			utils.SendResponse(ctx, 200, "Registration success", nil)
+			utils.SuccessResponse(ctx, "Registration success", nil)
 		})
 		// login endpoint
 		auth.POST("/login", func(ctx *gin.Context) {
 			token, err := authController.Login(ctx)
 			if err != nil {
-				utils.SendResponse(ctx, 400, err.Error(), nil)
+				utils.ErrorResponse(ctx, err.Error(), nil)
 				return
 			}
-			utils.SendResponse(ctx, 200, "Login success", gin.H{"token": token})
+			utils.SuccessResponse(ctx, "Login success", gin.H{"token": token})
 		})
 	}
 }

@@ -1,21 +1,31 @@
 package utils
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
-// Response is a custom struct to format responses consistently
 type Response struct {
 	Message string      `json:"message"`
-	Status  int         `json:"status"`
+	Status  string      `json:"status"`
 	Data    interface{} `json:"data"`
 }
 
-// sendResponse sends a response with a standardized format
-func SendResponse(ctx *gin.Context, status int, message string, data interface{}) {
-	ctx.JSON(status, Response{
+func SuccessResponse(ctx *gin.Context, message string, data interface{}) {
+	response := Response{
 		Message: message,
-		Status:  status,
+		Status:  "SUCCESS",
 		Data:    data,
-	})
+	}
+	ctx.JSON(http.StatusOK, response)
+}
+
+func ErrorResponse(ctx *gin.Context, message string, data interface{}) {
+	response := Response{
+		Message: message,
+		Status:  "FAILED",
+		Data:    data,
+	}
+	ctx.JSON(http.StatusBadRequest, response)
 }
