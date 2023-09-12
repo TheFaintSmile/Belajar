@@ -18,6 +18,16 @@ type AuthController interface {
 	GetUserInfo(userID uint) (*models.User, error)
 }
 
+// All godoc
+// @Tags Auth
+// @Summary Register New User
+// @Description Put all mandatory parameter
+// @Param CreateUserRequest body dto.CreateUserRequest true "CreateUserRequest"
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} dto.CreateUserResponse
+// @Failure 200 {object} dto.CreateUserResponse
+// @Router /auth/register [post]
 func (c *authController) Register(ctx *gin.Context) error {
 	var user models.User
 	err := ctx.ShouldBindJSON(&user)
