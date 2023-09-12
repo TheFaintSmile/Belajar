@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/jinzhu/gorm"
+	"github.com/rumbel/belajar/internal/app/dto"
 	"github.com/rumbel/belajar/internal/app/models"
 	"github.com/rumbel/belajar/internal/app/service"
 	"github.com/rumbel/belajar/pkg/validators"
@@ -50,13 +51,8 @@ func (c *authController) Register(ctx *gin.Context) error {
 	return nil
 }
 
-type LoginInput struct {
-	Email    string `json:"email" binding:"required"`
-	Password string `json:"password" binding:"required"`
-}
-
 func (c *authController) Login(ctx *gin.Context) (string, error) {
-	var input LoginInput
+	var input dto.LoginInput
 	err := ctx.ShouldBindJSON(&input)
 	if err != nil {
 		return "",err
