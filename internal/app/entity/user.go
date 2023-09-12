@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/jinzhu/gorm"
+	middlewares "github.com/rumbel/belajar/internal/app/middlewares"
 	"github.com/rumbel/belajar/internal/app/utils"
-	"github.com/rumbel/belajar/internal/app/utils/token"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -74,7 +74,7 @@ func LoginCheck(email string, password string) (string, error) {
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
 		return "", fmt.Errorf("invalid login credentials")
 	}
-	token, err := token.GenerateToken(u.ID)
+	token, err := middlewares.GenerateToken(u.ID)
 	if err != nil {
 		return "", err
 	}
