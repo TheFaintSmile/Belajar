@@ -14,6 +14,7 @@ import (
 type AuthController interface {
 	Register(ctx *gin.Context) error
 	Login(ctx *gin.Context) (string, error)
+	GetUserInfo(userID uint) (*entity.User, error)
 }
 
 type authController struct {
@@ -53,6 +54,7 @@ type LoginInput struct {
 	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
+
 func (c *authController) Login(ctx *gin.Context) (string, error) {
 	var input LoginInput
 	err := ctx.ShouldBindJSON(&input)
@@ -68,4 +70,12 @@ func (c *authController) Login(ctx *gin.Context) (string, error) {
 		return "", err
 	}
 	return token, nil
+}
+
+func (c *authController) GetUserInfo(userID uint) (*entity.User, error) {
+	var user entity.User
+	if err := c.db.First(&user, userID).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
