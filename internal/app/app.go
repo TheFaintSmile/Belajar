@@ -15,6 +15,8 @@ import (
 	"github.com/rumbel/belajar/internal/app/routes"
 	"github.com/rumbel/belajar/internal/app/utils"
 	"github.com/rumbel/belajar/internal/config"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type App struct {
@@ -46,10 +48,13 @@ func NewApp() *App {
     // db.AutoMigrate(&entity.User{})
     utils.ConnectDB()
     utils.DB.AutoMigrate(&models.User{})
+    // Serve Swagger documentation
 
     router := gin.Default()
     router.Use(gin.Recovery())
     router.Use(middlewares.LogRequest)
+    router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
     api := router.Group("/api")
 
     return &App{

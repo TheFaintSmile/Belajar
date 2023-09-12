@@ -1,5 +1,8 @@
-# Backend Service
+# Belajar
+Backend Server of Rumah Belajar
 
-## References
-
-<https://www.youtube.com/playlist?list=PL3eAkoh7fypr8zrkiygiY1e9osoqjoV9w>
+## Commands
+1. Update swagger:
+```
+swag init -g cmd/server/main.go
+```

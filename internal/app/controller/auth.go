@@ -1,8 +1,6 @@
 package controller
 
 import (
-	// "log"
-
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/jinzhu/gorm"
@@ -12,28 +10,24 @@ import (
 	"github.com/rumbel/belajar/pkg/validators"
 )
 
+var authValidate *validator.Validate
+
 type AuthController interface {
 	Register(ctx *gin.Context) error
 	Login(ctx *gin.Context) (string, error)
 	GetUserInfo(userID uint) (*models.User, error)
 }
 
-type authController struct {
-	service service.AuthService
-	db 	*gorm.DB
-}
-
-var authValidate *validator.Validate
-
-func NewAuthController(service service.AuthService, db *gorm.DB) AuthController {
-	authValidate = validator.New()
-	authValidate.RegisterValidation("is-cool", validators.ValidateCoolTitle)
-	return &authController{
-		service: service,
-		db: db,
-	}
-}
-
+// All godoc
+// @Tags Auth
+// @Summary Register New User
+// @Description Put all mandatory parameter
+// @Param CreateUserRequest body dto.CreateUserRequest true "CreateUserRequest"
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} dto.CreateUserResponse
+// @Failure 200 {object} dto.CreateUserResponse
+// @Router /auth/register [post]
 func (c *authController) Register(ctx *gin.Context) error {
 	var user models.User
 	err := ctx.ShouldBindJSON(&user)
@@ -74,4 +68,18 @@ func (c *authController) GetUserInfo(userID uint) (*models.User, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+type authController struct {
+	service service.AuthService
+	db 	*gorm.DB
+}
+
+func NewAuthController(service service.AuthService, db *gorm.DB) AuthController {
+	authValidate = validator.New()
+	authValidate.RegisterValidation("is-cool", validators.ValidateCoolTitle)
+	return &authController{
+		service: service,
+		db: db,
+	}
 }

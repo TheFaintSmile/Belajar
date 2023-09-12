@@ -3,7 +3,7 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	controller "github.com/rumbel/belajar/internal/app/controller/auth"
+	"github.com/rumbel/belajar/internal/app/controller"
 	"github.com/rumbel/belajar/internal/app/middlewares"
 	"github.com/rumbel/belajar/internal/app/repository"
 	"github.com/rumbel/belajar/internal/app/service"

@@ -1,0 +1,129 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/auth/register": {
+            "post": {
+                "description": "Put all mandatory parameter",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register New User",
+                "parameters": [
+                    {
+                        "description": "CreateUserRequest",
+                        "name": "CreateUserRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateUserResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.CreateUserRequest": {
+            "type": "object",
+            "required": [
+                "age",
+                "email",
+                "firstname",
+                "lastname",
+                "level",
+                "password"
+            ],
+            "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "firstname": {
+                    "type": "string"
+                },
+                "lastname": {
+                    "type": "string"
+                },
+                "level": {
+                    "$ref": "#/definitions/models.UserLevel"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CreateUserResponse": {
+            "type": "object",
+            "required": [
+                "age",
+                "email",
+                "firstname",
+                "lastname",
+                "level",
+                "password"
+            ],
+            "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "firstname": {
+                    "type": "string"
+                },
+                "lastname": {
+                    "type": "string"
+                },
+                "level": {
+                    "$ref": "#/definitions/models.UserLevel"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UserLevel": {
+            "type": "string",
+            "enum": [
+                "SD-1",
+                "SD-2",
+                "SD-3",
+                "SD-4",
+                "SD-5",
+                "SD-6",
+                "SMP",
+                "SMA"
+            ],
+            "x-enum-varnames": [
+                "LevelSD1",
+                "LevelSD2",
+                "LevelSD3",
+                "LevelSD4",
+                "LevelSD5",
+                "LevelSD6",
+                "LevelSMP",
+                "LevelSMA"
+            ]
+        }
+    }
+}
