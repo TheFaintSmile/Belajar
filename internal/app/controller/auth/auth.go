@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/jinzhu/gorm"
-	"github.com/rumbel/belajar/internal/app/entity"
+	"github.com/rumbel/belajar/internal/app/models"
 	"github.com/rumbel/belajar/internal/app/service"
 	"github.com/rumbel/belajar/pkg/validators"
 )
@@ -14,7 +14,7 @@ import (
 type AuthController interface {
 	Register(ctx *gin.Context) error
 	Login(ctx *gin.Context) (string, error)
-	GetUserInfo(userID uint) (*entity.User, error)
+	GetUserInfo(userID uint) (*models.User, error)
 }
 
 type authController struct {
@@ -34,7 +34,7 @@ func NewAuthController(service service.AuthService, db *gorm.DB) AuthController 
 }
 
 func (c *authController) Register(ctx *gin.Context) error {
-	var user entity.User
+	var user models.User
 	err := ctx.ShouldBindJSON(&user)
 	if err != nil {
 		return err
@@ -61,7 +61,7 @@ func (c *authController) Login(ctx *gin.Context) (string, error) {
 	if err != nil {
 		return "",err
 	}
-	u := entity.User{}
+	u := models.User{}
 	u.Email = input.Email
 	u.Password = input.Password
 
@@ -72,8 +72,8 @@ func (c *authController) Login(ctx *gin.Context) (string, error) {
 	return token, nil
 }
 
-func (c *authController) GetUserInfo(userID uint) (*entity.User, error) {
-	var user entity.User
+func (c *authController) GetUserInfo(userID uint) (*models.User, error) {
+	var user models.User
 	if err := c.db.First(&user, userID).Error; err != nil {
 		return nil, err
 	}

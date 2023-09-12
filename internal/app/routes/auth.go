@@ -5,12 +5,13 @@ import (
 	"github.com/jinzhu/gorm"
 	controller "github.com/rumbel/belajar/internal/app/controller/auth"
 	"github.com/rumbel/belajar/internal/app/middlewares"
+	"github.com/rumbel/belajar/internal/app/repository"
 	"github.com/rumbel/belajar/internal/app/service"
 	utils "github.com/rumbel/belajar/internal/app/utils"
 )
 
 var (
-	authService service.AuthService = service.NewAuthService()
+	authService service.AuthService = service.NewAuthService(repository.NewUserRepository())
 )
 
 func AuthRoutes(api *gin.RouterGroup, db *gorm.DB) {
