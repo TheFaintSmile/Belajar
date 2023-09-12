@@ -1,7 +1,6 @@
 package service
 
 import (
-	// "log"
 	"fmt"
 
 	"github.com/rumbel/belajar/internal/app/models"
@@ -12,16 +11,6 @@ import (
 type AuthService interface {
 	Register(models.User) (string, error)
 	Login(models.User) (string, error)
-}
-
-type authService struct {
-	userRepository *repository.UserRepository
-}
-
-func NewAuthService(userRepository *repository.UserRepository) AuthService {
-	return &authService{
-		userRepository: userRepository,
-	}
 }
 
 func (s *authService) Register(user models.User) (string, error) {
@@ -58,4 +47,15 @@ func (s *authService) Login(user models.User) (string, error) {
 	}
 	return token, nil
 }
+
+type authService struct {
+	userRepository *repository.UserRepository
+}
+
+func NewAuthService(userRepository *repository.UserRepository) AuthService {
+	return &authService{
+		userRepository: userRepository,
+	}
+}
+
 
