@@ -42,6 +42,7 @@ func (service *authService) Register(user entity.User) (string, error) {
 	u.Age = user.Age
 	u.Email = user.Email
 	u.Password = user.Password
+	u.Level = user.Level
 
 	_, err := u.SaveUser()
 	if err != nil {
