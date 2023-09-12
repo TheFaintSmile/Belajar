@@ -11,9 +11,9 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/joho/godotenv"
 	"github.com/rumbel/belajar/internal/app/middlewares"
+	"github.com/rumbel/belajar/internal/app/models"
 	"github.com/rumbel/belajar/internal/app/routes"
 	"github.com/rumbel/belajar/internal/app/utils"
-	"github.com/rumbel/belajar/internal/app/entity"
 	"github.com/rumbel/belajar/internal/config"
 )
 
@@ -45,7 +45,7 @@ func NewApp() *App {
     // }
     // db.AutoMigrate(&entity.User{})
     utils.ConnectDB()
-    utils.DB.AutoMigrate(&entity.User{})
+    utils.DB.AutoMigrate(&models.User{})
 
     router := gin.Default()
     router.Use(gin.Recovery())
@@ -70,7 +70,6 @@ func (a *App) Run() {
 	}))
 	a.router.SetTrustedProxies(nil)
 	serverPort := fmt.Sprintf(":%s", a.config.ServerPort)
-	routes.TestRoutes(a.api)
 	routes.AuthRoutes(a.api, a.db)
 
 	a.router.Run(serverPort)
