@@ -19,5 +19,5 @@ const (
 
 type Level struct {
 	gorm.Model
-	Name UserLevel `json: "name"`
+	Name UserLevel `json:"name" gorm:"primary_key"`
 }
