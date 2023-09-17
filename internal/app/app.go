@@ -11,10 +11,12 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/joho/godotenv"
 	"github.com/rumbel/belajar/internal/app/middlewares"
+	"github.com/rumbel/belajar/internal/app/models"
 	"github.com/rumbel/belajar/internal/app/routes"
 	"github.com/rumbel/belajar/internal/app/utils"
-	"github.com/rumbel/belajar/internal/app/entity"
 	"github.com/rumbel/belajar/internal/config"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type App struct {
@@ -45,11 +47,14 @@ func NewApp() *App {
     // }
     // db.AutoMigrate(&entity.User{})
     utils.ConnectDB()
-    utils.DB.AutoMigrate(&entity.User{})
+    utils.DB.AutoMigrate(&models.User{})
+    // Serve Swagger documentation
 
     router := gin.Default()
     router.Use(gin.Recovery())
     router.Use(middlewares.LogRequest)
+    router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
     api := router.Group("/api")
 
     return &App{
@@ -70,7 +75,6 @@ func (a *App) Run() {
 	}))
 	a.router.SetTrustedProxies(nil)
 	serverPort := fmt.Sprintf(":%s", a.config.ServerPort)
-	routes.TestRoutes(a.api)
 	routes.AuthRoutes(a.api, a.db)
 
 	a.router.Run(serverPort)

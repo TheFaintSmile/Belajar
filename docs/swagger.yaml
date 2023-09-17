@@ -1,0 +1,91 @@
+definitions:
+  dto.CreateUserRequest:
+    properties:
+      age:
+        type: integer
+      email:
+        type: string
+      firstname:
+        type: string
+      lastname:
+        type: string
+      level:
+        $ref: '#/definitions/models.UserLevel'
+      password:
+        type: string
+    required:
+    - age
+    - email
+    - firstname
+    - lastname
+    - level
+    - password
+    type: object
+  dto.CreateUserResponse:
+    properties:
+      age:
+        type: integer
+      email:
+        type: string
+      firstname:
+        type: string
+      lastname:
+        type: string
+      level:
+        $ref: '#/definitions/models.UserLevel'
+      password:
+        type: string
+    required:
+    - age
+    - email
+    - firstname
+    - lastname
+    - level
+    - password
+    type: object
+  models.UserLevel:
+    enum:
+    - SD-1
+    - SD-2
+    - SD-3
+    - SD-4
+    - SD-5
+    - SD-6
+    - SMP
+    - SMA
+    type: string
+    x-enum-varnames:
+    - LevelSD1
+    - LevelSD2
+    - LevelSD3
+    - LevelSD4
+    - LevelSD5
+    - LevelSD6
+    - LevelSMP
+    - LevelSMA
+info:
+  contact: {}
+paths:
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Put all mandatory parameter
+      parameters:
+      - description: CreateUserRequest
+        in: body
+        name: CreateUserRequest
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CreateUserResponse'
+      summary: Register New User
+      tags:
+      - Auth
+swagger: "2.0"
