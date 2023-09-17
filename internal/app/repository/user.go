@@ -18,8 +18,9 @@ func NewUserRepository() *UserRepository {
 func (ur *UserRepository) SaveUser(user *models.User) (*models.User, error) {
 	validLevels := []models.UserLevel{models.LevelSD1, models.LevelSD2, models.LevelSD3, models.LevelSD4, models.LevelSD5, models.LevelSD6, models.LevelSMP, models.LevelSMA}
 	isValidLevel := false
+	
 	for _, level := range validLevels {
-		if user.Level == level {
+		if user.LevelID == level {
 			isValidLevel = true
 			break
 		}
@@ -59,5 +60,5 @@ func (ur *UserRepository) LoginCheck(email, password string) (string, error) {
 func (ur *UserRepository) CheckEmailExists(email string) bool {
 	var u models.User
 	err := utils.DB.Model(&models.User{}).Where("email = ?", email).Take(&u).Error
-	return err == nil;
+	return err == nil
 }

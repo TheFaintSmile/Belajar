@@ -30,7 +30,7 @@ func (s *authService) Register(user models.User) (string, error) {
 	u.Age = user.Age
 	u.Email = user.Email
 	u.Password = user.Password
-	u.Level = user.Level
+	u.LevelID = user.LevelID
 
 	_, err := s.userRepository.SaveUser(&u)
 	if err != nil {
