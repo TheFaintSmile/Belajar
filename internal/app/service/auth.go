@@ -32,7 +32,16 @@ func (s *authService) Register(user models.User) (string, error) {
 	u.Password = user.Password
 	u.Level = user.Level
 
-	_, err := s.userRepository.SaveUser(&u)
+	err := utils.IsValidLevel(&u)
+	if err != nil {
+		return "", err
+	}
+	err = utils.HashingPassword(&u)
+	if err != nil {
+		return "", err
+	}
+
+	_, err = s.userRepository.SaveUser(&u)
 	if err != nil {
 		return "", err
 	}

@@ -16,17 +16,6 @@ func NewUserRepository() *UserRepository {
 }
 
 func (ur *UserRepository) SaveUser(user *models.User) (*models.User, error) {
-	validLevels := []models.UserLevel{models.LevelSD1, models.LevelSD2, models.LevelSD3, models.LevelSD4, models.LevelSD5, models.LevelSD6, models.LevelSMP, models.LevelSMA}
-	isValidLevel := false
-	for _, level := range validLevels {
-		if user.Level == level {
-			isValidLevel = true
-			break
-		}
-	}
-	if !isValidLevel {
-		return nil, fmt.Errorf("Invalid user level")
-	}
 	err := utils.DB.Create(user).Error
 	if err != nil {
 		return &models.User{}, err
