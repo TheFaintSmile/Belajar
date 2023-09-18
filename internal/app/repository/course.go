@@ -1,11 +1,15 @@
 package repository
 
-type CourseRepository struct{}
+import "github.com/jinzhu/gorm"
 
-func NewCourseRepository() *CourseRepository {
-	return &CourseRepository{}
+type CourseRepository struct {
+	DB *gorm.DB
+}
+
+func NewCourseRepository(db *gorm.DB) *CourseRepository {
+	return &CourseRepository{DB: db}
 }
 
 func (repository *CourseRepository) GetCourseList() {
-	
+
 }

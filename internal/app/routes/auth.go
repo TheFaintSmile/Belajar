@@ -10,11 +10,9 @@ import (
 	utils "github.com/rumbel/belajar/internal/app/utils"
 )
 
-var (
-	authService service.AuthService = service.NewAuthService(repository.NewUserRepository())
-)
-
 func AuthRoutes(api *gin.RouterGroup, db *gorm.DB) {
+	authService := service.NewAuthService(repository.NewUserRepository(db))
+
 	authController := controller.NewAuthController(authService, db)
 
 	auth := api.Group("/auth")
@@ -26,14 +24,14 @@ func AuthRoutes(api *gin.RouterGroup, db *gorm.DB) {
 }
 
 func Register(authController controller.AuthController) gin.HandlerFunc {
-    return func(ctx *gin.Context) {
-        err := authController.Register(ctx)
-        if err != nil {
-            utils.ErrorResponse(ctx, err.Error(), nil)
-            return
-        }
-        utils.SuccessResponse(ctx, "Registration success", nil)
-    }
+	return func(ctx *gin.Context) {
+		err := authController.Register(ctx)
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
+		utils.SuccessResponse(ctx, "Registration success", nil)
+	}
 }
 
 func Login(authController controller.AuthController) gin.HandlerFunc {
@@ -48,17 +46,17 @@ func Login(authController controller.AuthController) gin.HandlerFunc {
 }
 
 func Credential(authController controller.AuthController) gin.HandlerFunc {
-    return func(ctx *gin.Context) {
-        userID, err := middlewares.ExtractTokenID(ctx)
-        if err != nil {
-            utils.ErrorResponse(ctx, err.Error(), nil)
-            return
-        }
-        userInfo, err := authController.GetUserInfo(userID)
-        if err != nil {
-            utils.ErrorResponse(ctx, err.Error(), nil)
-            return
-        }
-        utils.SuccessResponse(ctx, "User Info Retrieved", userInfo)
-    }
+	return func(ctx *gin.Context) {
+		userID, err := middlewares.ExtractTokenID(ctx)
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
+		userInfo, err := authController.GetUserInfo(userID)
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
+		utils.SuccessResponse(ctx, "User Info Retrieved", userInfo)
+	}
 }

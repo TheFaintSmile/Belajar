@@ -3,16 +3,18 @@ package repository
 import (
 	"fmt"
 
+	"github.com/jinzhu/gorm"
 	middlewares "github.com/rumbel/belajar/internal/app/middlewares"
 	"github.com/rumbel/belajar/internal/app/models"
-	"github.com/rumbel/belajar/internal/app/utils"
 	"golang.org/x/crypto/bcrypt"
 )
 
-type UserRepository struct{}
+type UserRepository struct {
+	DB *gorm.DB
+}
 
-func NewUserRepository() *UserRepository {
-	return &UserRepository{}
+func NewUserRepository(db *gorm.DB) *UserRepository {
+	return &UserRepository{DB: db}
 }
 
 func (ur *UserRepository) SaveUser(user *models.User) (*models.User, error) {
@@ -28,7 +30,7 @@ func (ur *UserRepository) SaveUser(user *models.User) (*models.User, error) {
 	if !isValidLevel {
 		return nil, fmt.Errorf("invalid user level")
 	}
-	err := utils.DB.Create(user).Error
+	err := ur.DB.Create(user).Error
 	if err != nil {
 		return &models.User{}, err
 	}
@@ -42,7 +44,7 @@ func (ur *UserRepository) VerifyPassword(password, hashedPassword string) error 
 func (ur *UserRepository) LoginCheck(email, password string) (string, error) {
 	var err error
 	user := models.User{}
-	err = utils.DB.Model(&models.User{}).Where("email = ?", email).Take(&user).Error
+	err = ur.DB.Model(&models.User{}).Where("email = ?", email).Take(&user).Error
 	if err != nil {
 		return "", fmt.Errorf("user not found")
 	}
@@ -59,6 +61,6 @@ func (ur *UserRepository) LoginCheck(email, password string) (string, error) {
 
 func (ur *UserRepository) CheckEmailExists(email string) bool {
 	var u models.User
-	err := utils.DB.Model(&models.User{}).Where("email = ?", email).Take(&u).Error
+	err := ur.DB.Model(&models.User{}).Where("email = ?", email).Take(&u).Error
 	return err == nil
 }

@@ -7,14 +7,12 @@ import (
 	"github.com/rumbel/belajar/internal/app/middlewares"
 	"github.com/rumbel/belajar/internal/app/repository"
 	"github.com/rumbel/belajar/internal/app/service"
-	"github.com/rumbel/belajar/internal/app/utils"
-)
-
-var (
-	courseService *service.CourseService = service.NewCourseService(repository.NewCourseRepository())
+	utils "github.com/rumbel/belajar/internal/app/utils"
 )
 
 func CourseRoutes(api *gin.RouterGroup, db *gorm.DB) {
+	courseService := service.NewCourseService(repository.NewCourseRepository(db))
+
 	courseController := controller.NewCourseController(*courseService)
 
 	courseList := api.Group("/course")
