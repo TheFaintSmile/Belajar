@@ -26,7 +26,7 @@ func (ur *UserRepository) SaveUser(user *models.User) (*models.User, error) {
 		}
 	}
 	if !isValidLevel {
-		return nil, fmt.Errorf("Invalid user level")
+		return nil, fmt.Errorf("invalid user level")
 	}
 	err := utils.DB.Create(user).Error
 	if err != nil {

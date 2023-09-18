@@ -49,7 +49,7 @@ func NewApp() *App {
 	utils.ConnectDB()
 	utils.DB.AutoMigrate(&models.User{})
 	utils.DB.AutoMigrate(&models.Level{})
-	utils.DB.AutoMigrate(&models.CourseList{})
+	utils.DB.AutoMigrate(&models.Course{})
 
 	middlewares.InitializeLevelToDatabase(utils.DB)
 	// Serve Swagger documentation

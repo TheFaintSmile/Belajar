@@ -57,5 +57,3 @@ func NewAuthService(userRepository *repository.UserRepository) AuthService {
 		userRepository: userRepository,
 	}
 }
-
-
