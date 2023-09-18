@@ -19,5 +19,7 @@ const (
 
 type Level struct {
 	gorm.Model
-	Name UserLevel `json:"name" gorm:"primary_key"`
+	Name    UserLevel `json:"name" gorm:"primary_key"`
+	Courses []Course  `gorm:"foreignKey:LevelID"`
+	Users   []User    `gorm:"foreignKey:LevelID"`
 }

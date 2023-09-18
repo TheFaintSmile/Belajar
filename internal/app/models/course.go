@@ -7,5 +7,4 @@ type Course struct {
 	Name     string `json:"name" binding:"required"`
 	Lecturer string `json:"lecturer" binding:"required"`
 	LevelID  string `json:"level_id" gorm:"index"`
-	Level    Level  `json:"level" gorm:"foreignkey:LevelID,constraint:OnDelete:CASCADE"`
 }

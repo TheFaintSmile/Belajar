@@ -12,5 +12,5 @@ type User struct {
 	Email     string    `json:"email" binding:"required" gorm:"unique"`
 	Password  string    `json:"password" binding:"required,min=6"`
 	LevelID   UserLevel `json:"level_id" gorm:"index"`
-	Level     Level     `json:"level" gorm:"foreignkey:LevelID"`
+	Level     Level     `json:"level" gorm:"foreignkey:LevelID;references:Name;onDelete:CASCADE"`
 }

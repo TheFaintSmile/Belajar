@@ -14,11 +14,11 @@ func NewCourseRepository(db *gorm.DB) *CourseRepository {
 }
 
 func (repository *CourseRepository) GetCourseList() ([]models.Course, error) {
-	var courses []models.Course
+	var level models.Level
 
-	if err := repository.DB.Find(&courses).Error; err != nil {
+	if err := repository.DB.Model(&models.Level{}).Preload("Courses").Find(&level).Error; err != nil {
 		return nil, err
 	}
 
-	return courses, nil
+	return level.Courses, nil
 }
