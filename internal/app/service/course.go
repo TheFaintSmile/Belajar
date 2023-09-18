@@ -16,5 +16,11 @@ func NewCourseService(repository *repository.CourseRepository) *CourseService {
 }
 
 func (s *CourseService) GetCourseList() ([]models.Course, error) {
-	return []models.Course{}, nil
+	courses, err := s.repository.GetCourseList()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return courses, nil
 }

@@ -20,7 +20,7 @@ func (c *CourseController) GetCourseList(ctx *gin.Context) ([]models.Course, err
 	courses, err := c.service.GetCourseList()
 
 	if err != nil {
-		return []models.Course{}, err
+		return nil, err
 	}
 
 	return courses, nil
