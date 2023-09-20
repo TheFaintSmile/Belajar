@@ -23,10 +23,6 @@ func (ur *UserRepository) SaveUser(user *models.User) (*models.User, error) {
 	return user, nil
 }
 
-func (ur *UserRepository) VerifyPassword(password, hashedPassword string) error {
-	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
-}
-
 func (ur *UserRepository) LoginCheck(email, password string) (string, error) {
 	var err error
 	user := models.User{}
@@ -34,7 +30,7 @@ func (ur *UserRepository) LoginCheck(email, password string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("user not found")
 	}
-	err = ur.VerifyPassword(password, user.Password)
+	err = utils.VerifyPassword(password, user.Password)
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
 		return "", fmt.Errorf("invalid login credentials")
 	}
