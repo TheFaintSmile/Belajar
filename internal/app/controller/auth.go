@@ -51,11 +51,7 @@ func (c *authController) Login(ctx *gin.Context) (string, error) {
 	if err != nil {
 		return "",err
 	}
-	u := models.User{}
-	u.Email = input.Email
-	u.Password = input.Password
-
-	token, err := c.service.Login(u)
+	token, err := c.service.Login(input)
 	if err != nil {
 		return "", err
 	}
