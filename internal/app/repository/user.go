@@ -20,6 +20,28 @@ func (ur *UserRepository) SaveUser(user *models.User) (*models.User, error) {
 	if err != nil {
 		return &models.User{}, err
 	}
+	if user.Role == models.RoleSiswa {
+		siswa := models.Siswa{}
+		siswa.Email = user.Email
+		err = utils.DB.Create(&siswa).Error
+		if err != nil {
+			return &models.User{}, err
+		}
+	} else if user.Role == models.RolePendidik {
+		pendidik := models.Pendidik{}
+		pendidik.Email = user.Email
+		err = utils.DB.Create(&pendidik).Error
+		if err != nil {
+			return &models.User{}, err
+		}
+	} else if user.Role == models.RoleAdmin {
+		admin := models.Admin{}
+		admin.Email = user.Email
+		err = utils.DB.Create(&admin).Error
+		if err != nil {
+			return &models.User{}, err
+		}
+	}
 	return user, nil
 }
 

@@ -48,6 +48,9 @@ func NewApp() *App {
     // db.AutoMigrate(&entity.User{})
     utils.ConnectDB()
     utils.DB.AutoMigrate(&models.User{})
+    utils.DB.AutoMigrate(&models.Siswa{})
+    utils.DB.AutoMigrate(&models.Pendidik{})
+    utils.DB.AutoMigrate(&models.Admin{})
     // Serve Swagger documentation
 
     router := gin.Default()
