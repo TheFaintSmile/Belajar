@@ -56,7 +56,7 @@ func (ur *UserRepository) LoginCheck(email, password string) (string, error) {
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
 		return "", fmt.Errorf("invalid login credentials")
 	}
-	token, err := middlewares.GenerateToken(user.ID)
+	token, err := middlewares.GenerateToken(user.ID, string(user.Role))
 	if err != nil {
 		return "", err
 	}
