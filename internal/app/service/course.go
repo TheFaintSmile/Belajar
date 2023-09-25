@@ -24,3 +24,13 @@ func (s *CourseService) GetCourseList() ([]models.Course, error) {
 
 	return courses, nil
 }
+
+func (s *CourseService) AddCourse(course models.Course) (models.Course, error) {
+	result, err := s.repository.AddCourse(course)
+
+	if err != nil {
+		return models.Course{}, err
+	}
+
+	return result, nil
+}

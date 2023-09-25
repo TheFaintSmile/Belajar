@@ -47,7 +47,12 @@ func NewApp() *App {
 	// }
 	// db.AutoMigrate(&entity.User{})
 	utils.ConnectDB()
-	utils.DB.AutoMigrate(&models.User{}, &models.Level{}, &models.Course{})
+
+	db := utils.DB.AutoMigrate(&models.Level{}, &models.User{}, &models.Course{})
+
+	if db.Error != nil {
+		panic(err)
+	}
 
 	middlewares.InitializeLevelToDatabase(utils.DB)
 	// Serve Swagger documentation

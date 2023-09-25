@@ -25,3 +25,19 @@ func (c *CourseController) GetCourseList(ctx *gin.Context) ([]models.Course, err
 
 	return courses, nil
 }
+
+func (c *CourseController) AddCourse(ctx *gin.Context) (models.Course, error) {
+	var course models.Course
+
+	if err := ctx.ShouldBindJSON(&course); err != nil {
+		return models.Course{}, err
+	}
+
+	result, err := c.service.AddCourse(course)
+
+	if err != nil {
+		return models.Course{}, err
+	}
+
+	return result, nil
+}

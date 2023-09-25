@@ -24,6 +24,7 @@ func CourseRoutes(api *gin.RouterGroup, db *gorm.DB) {
 			})
 		})
 		courseList.GET("/", GetCourseList(courseController))
+		courseList.POST("/", AddCourse(courseController))
 	}
 }
 
@@ -43,5 +44,18 @@ func GetCourseList(courseController *controller.CourseController) gin.HandlerFun
 		}
 
 		utils.SuccessResponse(ctx, "Successfully GET Data.", result)
+	}
+}
+
+func AddCourse(courseController *controller.CourseController) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		result, err := courseController.AddCourse(ctx)
+
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
+
+		utils.SuccessResponse(ctx, "Successfully POST Data.", result)
 	}
 }

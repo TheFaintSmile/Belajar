@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/jinzhu/gorm"
 	"github.com/rumbel/belajar/internal/app/models"
 )
@@ -16,9 +18,20 @@ func NewCourseRepository(db *gorm.DB) *CourseRepository {
 func (repository *CourseRepository) GetCourseList() ([]models.Course, error) {
 	var level models.Level
 
-	if err := repository.DB.Model(&models.Level{}).Preload("Courses").Find(&level).Error; err != nil {
+	if err := repository.DB.Preload("Courses").First(&level, 6).Error; err != nil {
 		return nil, err
 	}
 
+	fmt.Println(level.Courses)
+
 	return level.Courses, nil
+}
+
+func (repository *CourseRepository) AddCourse(course models.Course) (models.Course, error) {
+
+	if err := repository.DB.Create(&course).Error; err != nil {
+		return models.Course{}, err
+	}
+
+	return course, nil
 }

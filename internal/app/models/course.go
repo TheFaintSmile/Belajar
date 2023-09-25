@@ -6,5 +6,6 @@ type Course struct {
 	gorm.Model
 	Name     string `json:"name" binding:"required"`
 	Lecturer string `json:"lecturer" binding:"required"`
-	LevelID  string `json:"level_id" gorm:"index"`
+	LevelID  uint   `json:"level_id" gorm:"foreign_key" binding:"required"`
+	// Modules  []string
 }
