@@ -12,6 +12,7 @@ import (
 type AuthService interface {
 	Register(models.User) (string, error)
 	Login(dto.LoginInput) (string, error)
+	GetUserInfo(userID uint) (*models.User, error)
 }
 
 func (s *authService) Register(user models.User) (string, error) {
@@ -63,6 +64,15 @@ func (s *authService) Login(userInput dto.LoginInput) (string, error) {
 	return token, nil
 }
 
+func (s *authService) GetUserInfo(userID uint) (*models.User, error) {
+	user, err := s.userRepository.GetUserInfo(userID)
+
+	if err != nil {
+		return &models.User{}, err
+	}
+
+	return user, nil
+}
 type authService struct {
 	userRepository *repository.UserRepository
 }

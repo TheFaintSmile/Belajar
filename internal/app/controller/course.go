@@ -16,8 +16,8 @@ func NewCourseController(service service.CourseService) *CourseController {
 	}
 }
 
-func (c *CourseController) GetCourseList(ctx *gin.Context) ([]models.Course, error) {
-	courses, err := c.service.GetCourseList()
+func (c *CourseController) GetCourseList(ctx *gin.Context, userLevel int) ([]models.Course, error) {
+	courses, err := c.service.GetCourseList(userLevel)
 
 	if err != nil {
 		return nil, err

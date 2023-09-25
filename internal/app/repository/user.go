@@ -3,44 +3,41 @@ package repository
 import (
 	"fmt"
 
-	"github.com/jinzhu/gorm"
 	middlewares "github.com/rumbel/belajar/internal/app/middlewares"
 	"github.com/rumbel/belajar/internal/app/models"
 	"github.com/rumbel/belajar/internal/app/utils"
 	"golang.org/x/crypto/bcrypt"
 )
 
-type UserRepository struct {
-	DB *gorm.DB
-}
+type UserRepository struct{}
 
-func NewUserRepository(db *gorm.DB) *UserRepository {
-	return &UserRepository{DB: db}
+func NewUserRepository() *UserRepository {
+	return &UserRepository{}
 }
 
 func (ur *UserRepository) SaveUser(user *models.User) (*models.User, error) {
-	err := ur.DB.Create(user).Error
+	err := utils.DB.Create(user).Error
 	if err != nil {
 		return &models.User{}, err
 	}
 	if user.Role == models.RoleSiswa {
 		siswa := models.Siswa{}
 		siswa.Email = user.Email
-		err = ur.DB.Create(&siswa).Error
+		err = utils.DB.Create(&siswa).Error
 		if err != nil {
 			return &models.User{}, err
 		}
 	} else if user.Role == models.RolePendidik {
 		pendidik := models.Pendidik{}
 		pendidik.Email = user.Email
-		err = ur.DB.Create(&pendidik).Error
+		err = utils.DB.Create(&pendidik).Error
 		if err != nil {
 			return &models.User{}, err
 		}
 	} else if user.Role == models.RoleAdmin {
 		admin := models.Admin{}
 		admin.Email = user.Email
-		err = ur.DB.Create(&admin).Error
+		err = utils.DB.Create(&admin).Error
 		if err != nil {
 			return &models.User{}, err
 		}
@@ -51,7 +48,7 @@ func (ur *UserRepository) SaveUser(user *models.User) (*models.User, error) {
 func (ur *UserRepository) LoginCheck(email, password string) (string, error) {
 	var err error
 	user := models.User{}
-	err = ur.DB.Model(&models.User{}).Where("email = ?", email).Take(&user).Error
+	err = utils.DB.Model(&models.User{}).Where("email = ?", email).Take(&user).Error
 	if err != nil {
 		return "", fmt.Errorf("user not found")
 	}
@@ -68,6 +65,14 @@ func (ur *UserRepository) LoginCheck(email, password string) (string, error) {
 
 func (ur *UserRepository) CheckEmailExists(email string) bool {
 	var u models.User
-	err := ur.DB.Model(&models.User{}).Where("email = ?", email).Take(&u).Error
+	err := utils.DB.Model(&models.User{}).Where("email = ?", email).Take(&u).Error
 	return err == nil
+}
+
+func (ur *UserRepository) GetUserInfo(userID uint) (*models.User, error) {
+	var user models.User
+	if err := utils.DB.First(&user, userID).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
 }

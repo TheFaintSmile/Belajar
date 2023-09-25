@@ -15,8 +15,8 @@ func NewCourseService(repository *repository.CourseRepository) *CourseService {
 	}
 }
 
-func (s *CourseService) GetCourseList() ([]models.Course, error) {
-	courses, err := s.repository.GetCourseList()
+func (s *CourseService) GetCourseList(userLevel int) ([]models.Course, error) {
+	courses, err := s.repository.GetCourseList(userLevel)
 
 	if err != nil {
 		return nil, err

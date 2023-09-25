@@ -10,9 +10,21 @@ import (
 	utils "github.com/rumbel/belajar/internal/app/utils"
 )
 
-func CourseRoutes(api *gin.RouterGroup, db *gorm.DB) {
-	courseService := service.NewCourseService(repository.NewCourseRepository(db))
+var (
+	courseService = service.NewCourseService(repository.NewCourseRepository())
+	levelMap      = map[string]int{
+		"SD-1": 1,
+		"SD-2": 2,
+		"SD-3": 3,
+		"SD-4": 4,
+		"SD-5": 5,
+		"SD-6": 6,
+		"SMP":  7,
+		"SMA":  8,
+	}
+)
 
+func CourseRoutes(api *gin.RouterGroup, db *gorm.DB) {
 	courseController := controller.NewCourseController(*courseService)
 
 	courseList := api.Group("/course")
@@ -30,14 +42,24 @@ func CourseRoutes(api *gin.RouterGroup, db *gorm.DB) {
 
 func GetCourseList(courseController *controller.CourseController) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		err := middlewares.TokenValid(ctx)
+		userID, err := middlewares.ExtractTokenID(ctx)
 
 		if err != nil {
-			utils.ErrorResponse(ctx, "unauthorized", nil)
+			utils.ErrorResponse(ctx, err.Error(), nil)
 			return
 		}
 
-		result, err := courseController.GetCourseList(ctx)
+		userInfo, err := authService.GetUserInfo(userID)
+
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
+
+		userLevel := levelMap[string(userInfo.LevelID)]
+
+		result, err := courseController.GetCourseList(ctx, userLevel)
+		
 		if err != nil {
 			utils.ErrorResponse(ctx, err.Error(), nil)
 			return

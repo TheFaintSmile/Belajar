@@ -10,8 +10,11 @@ import (
 	utils "github.com/rumbel/belajar/internal/app/utils"
 )
 
+var (
+	authService service.AuthService = service.NewAuthService(repository.NewUserRepository())
+)
+
 func AuthRoutes(api *gin.RouterGroup, db *gorm.DB) {
-	authService := service.NewAuthService(repository.NewUserRepository(db))
 
 	authController := controller.NewAuthController(authService, db)
 

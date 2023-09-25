@@ -1,35 +1,29 @@
 package repository
 
 import (
-	"fmt"
-
-	"github.com/jinzhu/gorm"
 	"github.com/rumbel/belajar/internal/app/models"
+	"github.com/rumbel/belajar/internal/app/utils"
 )
 
-type CourseRepository struct {
-	DB *gorm.DB
+type CourseRepository struct{}
+
+func NewCourseRepository() *CourseRepository {
+	return &CourseRepository{}
 }
 
-func NewCourseRepository(db *gorm.DB) *CourseRepository {
-	return &CourseRepository{DB: db}
-}
-
-func (repository *CourseRepository) GetCourseList() ([]models.Course, error) {
+func (repository *CourseRepository) GetCourseList(userLevel int) ([]models.Course, error) {
 	var level models.Level
 
-	if err := repository.DB.Preload("Courses").First(&level, 6).Error; err != nil {
+	if err := utils.DB.Preload("Courses").First(&level, userLevel).Error; err != nil {
 		return nil, err
 	}
-
-	fmt.Println(level.Courses)
 
 	return level.Courses, nil
 }
 
 func (repository *CourseRepository) AddCourse(course models.Course) (models.Course, error) {
 
-	if err := repository.DB.Create(&course).Error; err != nil {
+	if err := utils.DB.Create(&course).Error; err != nil {
 		return models.Course{}, err
 	}
 
