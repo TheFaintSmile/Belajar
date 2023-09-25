@@ -48,13 +48,14 @@ func NewApp() *App {
 	// db.AutoMigrate(&entity.User{})
 	utils.ConnectDB()
 
-	db := utils.DB.AutoMigrate(&models.Level{}, &models.User{}, &models.Course{})
+	db := utils.DB.AutoMigrate(&models.Level{}, &models.User{}, &models.Course{}, &models.Siswa{}, &models.Pendidik{}, &models.Admin{})
 
 	if db.Error != nil {
 		panic(err)
 	}
 
 	middlewares.InitializeLevelToDatabase(utils.DB)
+
 	// Serve Swagger documentation
 	router := gin.Default()
 	router.Use(gin.Recovery())

@@ -6,6 +6,7 @@ import (
 	"github.com/jinzhu/gorm"
 	middlewares "github.com/rumbel/belajar/internal/app/middlewares"
 	"github.com/rumbel/belajar/internal/app/models"
+	"github.com/rumbel/belajar/internal/app/utils"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -22,11 +23,29 @@ func (ur *UserRepository) SaveUser(user *models.User) (*models.User, error) {
 	if err != nil {
 		return &models.User{}, err
 	}
+	if user.Role == models.RoleSiswa {
+		siswa := models.Siswa{}
+		siswa.Email = user.Email
+		err = ur.DB.Create(&siswa).Error
+		if err != nil {
+			return &models.User{}, err
+		}
+	} else if user.Role == models.RolePendidik {
+		pendidik := models.Pendidik{}
+		pendidik.Email = user.Email
+		err = ur.DB.Create(&pendidik).Error
+		if err != nil {
+			return &models.User{}, err
+		}
+	} else if user.Role == models.RoleAdmin {
+		admin := models.Admin{}
+		admin.Email = user.Email
+		err = ur.DB.Create(&admin).Error
+		if err != nil {
+			return &models.User{}, err
+		}
+	}
 	return user, nil
-}
-
-func (ur *UserRepository) VerifyPassword(password, hashedPassword string) error {
-	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
 
 func (ur *UserRepository) LoginCheck(email, password string) (string, error) {
@@ -36,11 +55,11 @@ func (ur *UserRepository) LoginCheck(email, password string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("user not found")
 	}
-	err = ur.VerifyPassword(password, user.Password)
+	err = utils.VerifyPassword(password, user.Password)
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
 		return "", fmt.Errorf("invalid login credentials")
 	}
-	token, err := middlewares.GenerateToken(user.ID)
+	token, err := middlewares.GenerateToken(user.ID, string(user.Role))
 	if err != nil {
 		return "", err
 	}
