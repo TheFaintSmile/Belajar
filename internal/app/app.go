@@ -17,6 +17,9 @@ import (
 	"github.com/rumbel/belajar/internal/config"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/cloudinary/cloudinary-go/v2"
+    "github.com/cloudinary/cloudinary-go/v2/api/admin"
+    "github.com/cloudinary/cloudinary-go/v2/api/uploader"
 )
 
 type App struct {
