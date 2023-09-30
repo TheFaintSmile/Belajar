@@ -17,9 +17,6 @@ import (
 	"github.com/rumbel/belajar/internal/config"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"github.com/cloudinary/cloudinary-go/v2"
-    "github.com/cloudinary/cloudinary-go/v2/api/admin"
-    "github.com/cloudinary/cloudinary-go/v2/api/uploader"
 )
 
 type App struct {
@@ -51,7 +48,7 @@ func NewApp() *App {
 	// db.AutoMigrate(&entity.User{})
 	utils.ConnectDB()
 
-	db := utils.DB.AutoMigrate(&models.Level{}, &models.User{}, &models.Course{}, &models.Siswa{}, &models.Pendidik{}, &models.Admin{})
+	db := utils.DB.AutoMigrate(&models.Level{}, &models.User{}, &models.Course{}, &models.Siswa{}, &models.Pendidik{}, &models.Admin{}, &models.Week{}, &models.Material{}, &models.Task{})
 
 	if db.Error != nil {
 		panic(err)

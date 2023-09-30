@@ -41,3 +41,19 @@ func (c *CourseController) AddCourse(ctx *gin.Context) (models.Course, error) {
 
 	return result, nil
 }
+
+func (c *CourseController) AddWeekToCourse(ctx *gin.Context) (models.Week, error) {
+	var week models.Week
+
+	if err := ctx.ShouldBindJSON(&week); err != nil {
+		return models.Week{}, err
+	}
+
+	result, err := c.service.AddWeekToCourse(week)
+
+	if err != nil {
+		return models.Week{}, err
+	}
+
+	return result, nil
+}

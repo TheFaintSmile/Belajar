@@ -29,3 +29,12 @@ func (repository *CourseRepository) AddCourse(course models.Course) (models.Cour
 
 	return course, nil
 }
+
+func (repository *CourseRepository) AddWeekToCourse(week models.Week) (models.Week, error) {
+
+	if err := utils.DB.Create(&week).Error; err != nil {
+		return models.Week{}, err
+	}
+
+	return week, nil
+}

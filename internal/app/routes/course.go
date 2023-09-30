@@ -37,6 +37,7 @@ func CourseRoutes(api *gin.RouterGroup, db *gorm.DB) {
 		})
 		courseList.GET("/", GetCourseList(courseController))
 		courseList.POST("/", AddCourse(courseController))
+		courseList.PATCH("/:id", AddWeekToCourse(courseController))
 	}
 }
 
@@ -79,5 +80,18 @@ func AddCourse(courseController *controller.CourseController) gin.HandlerFunc {
 		}
 
 		utils.SuccessResponse(ctx, "Successfully POST Data.", result)
+	}
+}
+
+func AddWeekToCourse(courseController *controller.CourseController) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		result, err := courseController.AddWeekToCourse(ctx)
+
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
+
+		utils.SuccessResponse(ctx, "Successfully Added Week", result)
 	}
 }

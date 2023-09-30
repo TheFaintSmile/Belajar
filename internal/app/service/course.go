@@ -34,3 +34,13 @@ func (s *CourseService) AddCourse(course models.Course) (models.Course, error) {
 
 	return result, nil
 }
+
+func (s *CourseService) AddWeekToCourse(week models.Week) (models.Week, error) {
+	result, err := s.repository.AddWeekToCourse(week)
+
+	if err != nil {
+		return models.Week{}, err
+	}
+
+	return result, nil
+}
