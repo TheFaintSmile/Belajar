@@ -29,6 +29,7 @@ func CourseRoutes(api *gin.RouterGroup, db *gorm.DB) {
 
 	courseList := api.Group("/course")
 	{
+		courseList.Use(middlewares.Auth())
 		// Will be removed in production later.
 		courseList.GET("/test", func(ctx *gin.Context) {
 			ctx.JSON(200, gin.H{
@@ -60,7 +61,7 @@ func GetCourseList(courseController *controller.CourseController) gin.HandlerFun
 		userLevel := levelMap[string(userInfo.LevelID)]
 
 		result, err := courseController.GetCourseList(ctx, userLevel)
-		
+
 		if err != nil {
 			utils.ErrorResponse(ctx, err.Error(), nil)
 			return
