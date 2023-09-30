@@ -22,9 +22,19 @@ func (repository *CourseRepository) GetCourseList(userLevel int) ([]dto.CourseLi
 	return courses, nil
 }
 
+func (repository *CourseRepository) GetCourseDetail(id uint) (models.Course, error) {
+	var course models.Course
+
+	if err := utils.DB.First(&course, id).Error; err != nil {
+		return models.Course{}, err
+	}
+
+	return course, nil
+}
+
 func (repository *CourseRepository) AddCourse(course dto.AddCourseInput) (dto.AddCourseInput, error) {
 	newCourse := models.Course{
-		Name: course.Name,
+		Name:     course.Name,
 		Lecturer: course.Lecturer,
 		LevelID:  course.LevelID,
 	}

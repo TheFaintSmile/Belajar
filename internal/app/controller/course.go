@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/rumbel/belajar/internal/app/dto"
 	"github.com/rumbel/belajar/internal/app/models"
@@ -25,6 +27,22 @@ func (c *CourseController) GetCourseList(ctx *gin.Context, userLevel int) ([]dto
 	}
 
 	return courses, nil
+}
+
+func (c *CourseController) GetCourseDetail(ctx *gin.Context) (models.Course, error) {
+	courseID, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
+
+	if err != nil {
+		return models.Course{}, err
+	}
+
+	course, err := c.service.GetCourseDetail(uint(courseID))
+
+	if err != nil {
+		return models.Course{}, err
+	}
+
+	return course, nil
 }
 
 func (c *CourseController) AddCourse(ctx *gin.Context) (dto.AddCourseInput, error) {

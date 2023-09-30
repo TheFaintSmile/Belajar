@@ -71,6 +71,19 @@ func GetCourseList(courseController *controller.CourseController) gin.HandlerFun
 	}
 }
 
+func GetCourseDetail(courseController *controller.CourseController) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		result, err := courseController.GetCourseDetail(ctx)
+		
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
+
+		utils.SuccessResponse(ctx, "Successfully GET Data.", result)
+	}
+}
+
 func AddCourse(courseController *controller.CourseController) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		result, err := courseController.AddCourse(ctx)

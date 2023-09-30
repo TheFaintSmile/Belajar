@@ -26,6 +26,16 @@ func (s *CourseService) GetCourseList(userLevel int) ([]dto.CourseListResponse, 
 	return courses, nil
 }
 
+func (s *CourseService) GetCourseDetail(id uint) (models.Course, error) {
+	course, err := s.repository.GetCourseDetail(id)
+
+	if err != nil {
+		return models.Course{}, err
+	}
+
+	return course, nil
+}
+
 func (s *CourseService) AddCourse(course dto.AddCourseInput) (dto.AddCourseInput, error) {
 	result, err := s.repository.AddCourse(course)
 
