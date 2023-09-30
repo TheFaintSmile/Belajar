@@ -15,7 +15,7 @@ type Course struct {
 	Name     string `json:"name" binding:"required"`
 	Lecturer string `json:"lecturer" binding:"required"`
 	LevelID  uint   `json:"level_id" gorm:"foreign_key" binding:"required"`
-    Weeks    []Week `gorm:"foreignKey:CourseID;constraint:OnDelete:CASCADE"`
+	Weeks    []Week `gorm:"foreignKey:CourseID;constraint:OnDelete:CASCADE"`
 }
 
 type Week struct {
@@ -29,16 +29,20 @@ type Week struct {
 
 type Material struct {
 	gorm.Model
-	Name    string     `json:"name" binding:"required"`
-	Type    ModuleType `json:"type" binding:"required"`
-	Content string     `json:"content" binding:"required"`
-	WeekID  uint       `json:"week_id" gorm:"foreign_key" binding:"required"`
+	Name        string     `json:"name" binding:"required"`
+	Description string     `json:"description"`
+	Type        ModuleType `json:"type" binding:"required"`
+	Content     string     `json:"content" binding:"required"`
+	WeekID      uint       `json:"week_id" gorm:"foreign_key" binding:"required"`
+	IsCompleted bool       `json:"is_completed"`
 }
 
 type Task struct {
 	gorm.Model
-	Name    string     `json:"name" binding:"required"`
-	Type    ModuleType `json:"type" binding:"required"`
-	Content string     `json:"content" binding:"required"`
-	WeekID  uint       `json:"week_id" gorm:"foreign_key" binding:"required"`
+	Name        string     `json:"name" binding:"required"`
+	Description string     `json:"description"`
+	Type        ModuleType `json:"type" binding:"required"`
+	Content     string     `json:"content" binding:"required"`
+	WeekID      uint       `json:"week_id" gorm:"foreign_key" binding:"required"`
+	IsCompleted bool       `json:"is_completed"`
 }

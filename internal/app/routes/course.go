@@ -39,6 +39,7 @@ func CourseRoutes(api *gin.RouterGroup, db *gorm.DB) {
 		})
 		courseList.GET("/", GetCourseList(courseController))
 		courseList.GET("/:id/", GetCourseDetail(courseController))
+		courseList.DELETE("/:id/", DeleteWeekInCourse(courseController))
 		courseList.POST("/", AddCourse(courseController))
 		courseList.POST("/week/", AddWeekToCourse(courseController))
 	}
@@ -99,13 +100,31 @@ func GetCourseDetail(courseController *controller.CourseController) gin.HandlerF
 		if (userInfo.Role != models.RoleSiswa) || (levelMap[string(userInfo.LevelID)] == int(result.LevelID)) {
 			utils.SuccessResponse(ctx, "Successfully GET Data.", result)
 		} else {
-			utils.ErrorResponse(ctx, "Unauthorized", nil)
+			utils.ErrorResponse(ctx, "Forbidden Endpoint", nil)
 		}
 	}
 }
 
 func AddCourse(courseController *controller.CourseController) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		userID, err := middlewares.ExtractTokenID(ctx)
+
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
+
+		userInfo, err := authService.GetUserInfo(userID)
+
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
+
+		if userInfo.Role != models.RoleAdmin {
+			utils.ErrorResponse(ctx, "Forbidden Endpoint", nil)
+			return
+		}
 		result, err := courseController.AddCourse(ctx)
 
 		if err != nil {
@@ -119,6 +138,25 @@ func AddCourse(courseController *controller.CourseController) gin.HandlerFunc {
 
 func AddWeekToCourse(courseController *controller.CourseController) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		userID, err := middlewares.ExtractTokenID(ctx)
+
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
+
+		userInfo, err := authService.GetUserInfo(userID)
+
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
+
+		if userInfo.Role == models.RoleSiswa {
+			utils.ErrorResponse(ctx, "Forbidden Endpoint", nil)
+			return
+		}
+
 		result, err := courseController.AddWeekToCourse(ctx)
 
 		if err != nil {
@@ -127,5 +165,17 @@ func AddWeekToCourse(courseController *controller.CourseController) gin.HandlerF
 		}
 
 		utils.SuccessResponse(ctx, "Successfully Added Week", result)
+	}
+}
+
+func UpdateWeekInCourse(courseController *controller.CourseController) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		result := ""
+		utils.SuccessResponse(ctx, "Successfully Updated Week Information", result)
+	}
+}
+func DeleteWeekInCourse(courseController *controller.CourseController) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		utils.SuccessResponse(ctx, "Successfully Deleted Week", nil)
 	}
 }
