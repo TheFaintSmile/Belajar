@@ -5,6 +5,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/rumbel/belajar/internal/app/controller"
 	"github.com/rumbel/belajar/internal/app/middlewares"
+	"github.com/rumbel/belajar/internal/app/models"
 	"github.com/rumbel/belajar/internal/app/repository"
 	"github.com/rumbel/belajar/internal/app/service"
 	utils "github.com/rumbel/belajar/internal/app/utils"
@@ -74,14 +75,32 @@ func GetCourseList(courseController *controller.CourseController) gin.HandlerFun
 
 func GetCourseDetail(courseController *controller.CourseController) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		result, err := courseController.GetCourseDetail(ctx)
+
+		userID, err := middlewares.ExtractTokenID(ctx)
 
 		if err != nil {
 			utils.ErrorResponse(ctx, err.Error(), nil)
 			return
 		}
 
-		utils.SuccessResponse(ctx, "Successfully GET Data.", result)
+		userInfo, err := authService.GetUserInfo(userID)
+
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
+
+		result, err := courseController.GetCourseDetail(ctx, userInfo)
+
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
+		if (userInfo.Role != models.RoleSiswa) || (levelMap[string(userInfo.LevelID)] == int(result.LevelID)) {
+			utils.SuccessResponse(ctx, "Successfully GET Data.", result)
+		} else {
+			utils.ErrorResponse(ctx, "Unauthorized", nil)
+		}
 	}
 }
 
