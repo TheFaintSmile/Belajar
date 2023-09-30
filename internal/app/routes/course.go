@@ -39,6 +39,7 @@ func CourseRoutes(api *gin.RouterGroup, db *gorm.DB) {
 		})
 		courseList.GET("/", GetCourseList(courseController))
 		courseList.GET("/:id/", GetCourseDetail(courseController))
+		courseList.PATCH("/:id/", UpdateWeekInCourse(courseController))
 		courseList.DELETE("/:id/", DeleteWeekInCourse(courseController))
 		courseList.POST("/", AddCourse(courseController))
 		courseList.POST("/week/", AddWeekToCourse(courseController))
@@ -170,12 +171,22 @@ func AddWeekToCourse(courseController *controller.CourseController) gin.HandlerF
 
 func UpdateWeekInCourse(courseController *controller.CourseController) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		result := ""
+		
+		result, err := courseController.UpdateWeekInCourse(ctx)
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
 		utils.SuccessResponse(ctx, "Successfully Updated Week Information", result)
 	}
 }
 func DeleteWeekInCourse(courseController *controller.CourseController) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		result, err := courseController.DeleteWeekInCourse(ctx)
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
 		utils.SuccessResponse(ctx, "Successfully Deleted Week", nil)
 	}
 }

@@ -28,7 +28,7 @@ func PendidikAuth() gin.HandlerFunc {
 			})
 			return
 		}
-		if role != "Pendidik" {
+		if role == "Siswa" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"error": "Unauthorized",
 			})
