@@ -37,6 +37,7 @@ func CourseRoutes(api *gin.RouterGroup, db *gorm.DB) {
 			})
 		})
 		courseList.GET("/", GetCourseList(courseController))
+		courseList.GET("/:id/", GetCourseDetail(courseController))
 		courseList.POST("/", AddCourse(courseController))
 		courseList.POST("/week/", AddWeekToCourse(courseController))
 	}
@@ -74,7 +75,7 @@ func GetCourseList(courseController *controller.CourseController) gin.HandlerFun
 func GetCourseDetail(courseController *controller.CourseController) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		result, err := courseController.GetCourseDetail(ctx)
-		
+
 		if err != nil {
 			utils.ErrorResponse(ctx, err.Error(), nil)
 			return

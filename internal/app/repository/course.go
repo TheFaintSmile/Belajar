@@ -25,7 +25,7 @@ func (repository *CourseRepository) GetCourseList(userLevel int) ([]dto.CourseLi
 func (repository *CourseRepository) GetCourseDetail(id uint) (models.Course, error) {
 	var course models.Course
 
-	if err := utils.DB.First(&course, id).Error; err != nil {
+	if err := utils.DB.Preload("Weeks").First(&course, id).Preload("Weeks.Tasks").Preload("Weeks.Materials").First(&course, id).Error; err != nil {
 		return models.Course{}, err
 	}
 
