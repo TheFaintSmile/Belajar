@@ -65,3 +65,43 @@ func (s *CourseService) GetWeekOccurrence(course_id uint) (int, error) {
 
 	return occurrence, nil
 }
+
+func (s *CourseService) UpdateCourseInformation(course_id uint) (int, error) {
+	occurrence, err := s.repository.UpdateCourseInformation(course_id)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return occurrence, nil
+}
+
+func (s *CourseService) DeleteCourse(course_id uint) error {
+	err := s.repository.DeleteCourse(course_id)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *CourseService) UpdateWeekInCourse(week uint) (int, error) {
+	occurrence, err := s.repository.UpdateWeekInCourse(week)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return occurrence, nil
+}
+
+func (s *CourseService) DeleteWeekInCourse(week uint) error {
+	err := s.repository.DeleteWeekInCourse(week)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -63,3 +63,46 @@ func (repository *CourseRepository) GetWeekOccurrence(course_id uint) (int, erro
 
 	return int(occurrence), nil
 }
+
+func (repository *CourseRepository) UpdateCourseInformation(course_id uint) (int, error) {
+	var occurrence int64
+
+	if err := utils.DB.Model(&models.Week{}).Where("course_id = ?", course_id).Count(&occurrence).Error; err != nil {
+		return 0, err
+	}
+
+	return int(occurrence), nil
+}
+
+func (repository *CourseRepository) DeleteCourse(id uint) error {
+	var course models.Course
+
+	if err := utils.DB.First(&course, id).Error; err != nil {
+		return err
+	}
+
+	if err := utils.DB.Delete(&course).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (repository *CourseRepository) UpdateWeekInCourse(week uint) (int, error) {
+
+	return 0, nil
+}
+
+func (repository *CourseRepository) DeleteWeekInCourse(weekID uint) error {
+	var week models.Week
+
+	if err := utils.DB.First(&week, weekID).Error; err != nil {
+		return err
+	}
+
+	if err := utils.DB.Delete(&week).Error; err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -84,3 +84,44 @@ func (c *CourseController) AddWeekToCourse(ctx *gin.Context) (models.Week, error
 
 	return result, nil
 }
+
+func (c *CourseController) UpdateCourseInformation(ctx *gin.Context) (models.Course, error) {
+	return models.Course{}, nil
+}
+
+func (c *CourseController) DeleteCourse(ctx *gin.Context) (error) {
+	courseID, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
+
+	if err != nil {
+		return err
+	}
+
+	err = c.service.DeleteCourse(uint(courseID))
+	
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *CourseController) UpdateWeekInCourse(ctx *gin.Context) (models.Week, error) {
+	return models.Week{}, nil
+}
+
+func (c *CourseController) DeleteWeekInCourse(ctx *gin.Context) (error) {
+
+	weekID, err := strconv.ParseUint(ctx.Param("weekID"), 10, 32)
+
+	if err != nil {
+		return err
+	}
+
+	err = c.service.DeleteWeekInCourse(uint(weekID))
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

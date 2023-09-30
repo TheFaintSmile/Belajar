@@ -39,8 +39,12 @@ func CourseRoutes(api *gin.RouterGroup, db *gorm.DB) {
 		})
 		courseList.GET("/", GetCourseList(courseController))
 		courseList.GET("/:id/", GetCourseDetail(courseController))
-		courseList.PATCH("/:id/", UpdateWeekInCourse(courseController))
-		courseList.DELETE("/:id/", DeleteWeekInCourse(courseController))
+
+		courseList.Use(middlewares.PendidikAdminAuth())
+		courseList.PATCH("/:id/week/:weekID/", UpdateWeekInCourse(courseController))
+		courseList.DELETE("/:id/week/:weekID/", DeleteWeekInCourse(courseController))
+		courseList.PATCH("/:id/", UpdateCourseInformation(courseController))
+		courseList.DELETE("/:id/", DeleteCourse(courseController))
 		courseList.POST("/", AddCourse(courseController))
 		courseList.POST("/week/", AddWeekToCourse(courseController))
 	}
@@ -108,8 +112,6 @@ func GetCourseDetail(courseController *controller.CourseController) gin.HandlerF
 
 func AddCourse(courseController *controller.CourseController) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		middlewares.PendidikAdminAuth()
-
 		result, err := courseController.AddCourse(ctx)
 
 		if err != nil {
@@ -123,8 +125,6 @@ func AddCourse(courseController *controller.CourseController) gin.HandlerFunc {
 
 func AddWeekToCourse(courseController *controller.CourseController) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		middlewares.PendidikAdminAuth()
-
 		result, err := courseController.AddWeekToCourse(ctx)
 
 		if err != nil {
@@ -136,9 +136,30 @@ func AddWeekToCourse(courseController *controller.CourseController) gin.HandlerF
 	}
 }
 
+func UpdateCourseInformation(courseController *controller.CourseController) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		result, err := courseController.UpdateCourseInformation(ctx)
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
+		utils.SuccessResponse(ctx, "Successfully Updated Course Information", result)
+	}
+}
+func DeleteCourse(courseController *controller.CourseController) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		err := courseController.DeleteCourse(ctx)
+
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
+		utils.SuccessResponse(ctx, "Successfully Deleted Course", nil)
+	}
+}
+
 func UpdateWeekInCourse(courseController *controller.CourseController) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		middlewares.PendidikAdminAuth()
 		result, err := courseController.UpdateWeekInCourse(ctx)
 		if err != nil {
 			utils.ErrorResponse(ctx, err.Error(), nil)
@@ -149,8 +170,8 @@ func UpdateWeekInCourse(courseController *controller.CourseController) gin.Handl
 }
 func DeleteWeekInCourse(courseController *controller.CourseController) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		middlewares.PendidikAdminAuth()
-		result, err := courseController.DeleteWeekInCourse(ctx)
+		err := courseController.DeleteWeekInCourse(ctx)
+
 		if err != nil {
 			utils.ErrorResponse(ctx, err.Error(), nil)
 			return

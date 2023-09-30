@@ -30,7 +30,7 @@ func PendidikAdminAuth() gin.HandlerFunc {
 		}
 		if role == "Siswa" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "Forbidden",
+				"error": "Forbidden Endpoint",
 			})
 			return
 		}
