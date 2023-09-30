@@ -19,7 +19,7 @@ func Auth() gin.HandlerFunc {
 	}
 }
 
-func PendidikAuth() gin.HandlerFunc {
+func PendidikAdminAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		role, err := ExtractTokenRole(c)
 		if err != nil {
@@ -30,7 +30,7 @@ func PendidikAuth() gin.HandlerFunc {
 		}
 		if role == "Siswa" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "Unauthorized",
+				"error": "Forbidden",
 			})
 			return
 		}

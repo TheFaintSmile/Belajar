@@ -29,7 +29,7 @@ func (c *CourseController) GetCourseList(ctx *gin.Context, userLevel int) ([]dto
 	return courses, nil
 }
 
-func (c *CourseController) GetCourseDetail(ctx *gin.Context, userInfo *models.User) (models.Course, error) {
+func (c *CourseController) GetCourseDetail(ctx *gin.Context) (models.Course, error) {
 	courseID, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
 
 	if err != nil {

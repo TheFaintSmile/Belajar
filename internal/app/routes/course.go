@@ -92,7 +92,7 @@ func GetCourseDetail(courseController *controller.CourseController) gin.HandlerF
 			return
 		}
 
-		result, err := courseController.GetCourseDetail(ctx, userInfo)
+		result, err := courseController.GetCourseDetail(ctx)
 
 		if err != nil {
 			utils.ErrorResponse(ctx, err.Error(), nil)
@@ -108,24 +108,8 @@ func GetCourseDetail(courseController *controller.CourseController) gin.HandlerF
 
 func AddCourse(courseController *controller.CourseController) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		userID, err := middlewares.ExtractTokenID(ctx)
+		middlewares.PendidikAdminAuth()
 
-		if err != nil {
-			utils.ErrorResponse(ctx, err.Error(), nil)
-			return
-		}
-
-		userInfo, err := authService.GetUserInfo(userID)
-
-		if err != nil {
-			utils.ErrorResponse(ctx, err.Error(), nil)
-			return
-		}
-
-		if userInfo.Role != models.RoleAdmin {
-			utils.ErrorResponse(ctx, "Forbidden Endpoint", nil)
-			return
-		}
 		result, err := courseController.AddCourse(ctx)
 
 		if err != nil {
@@ -139,24 +123,7 @@ func AddCourse(courseController *controller.CourseController) gin.HandlerFunc {
 
 func AddWeekToCourse(courseController *controller.CourseController) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		userID, err := middlewares.ExtractTokenID(ctx)
-
-		if err != nil {
-			utils.ErrorResponse(ctx, err.Error(), nil)
-			return
-		}
-
-		userInfo, err := authService.GetUserInfo(userID)
-
-		if err != nil {
-			utils.ErrorResponse(ctx, err.Error(), nil)
-			return
-		}
-
-		if userInfo.Role == models.RoleSiswa {
-			utils.ErrorResponse(ctx, "Forbidden Endpoint", nil)
-			return
-		}
+		middlewares.PendidikAdminAuth()
 
 		result, err := courseController.AddWeekToCourse(ctx)
 
@@ -171,7 +138,7 @@ func AddWeekToCourse(courseController *controller.CourseController) gin.HandlerF
 
 func UpdateWeekInCourse(courseController *controller.CourseController) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		
+		middlewares.PendidikAdminAuth()
 		result, err := courseController.UpdateWeekInCourse(ctx)
 		if err != nil {
 			utils.ErrorResponse(ctx, err.Error(), nil)
@@ -182,6 +149,7 @@ func UpdateWeekInCourse(courseController *controller.CourseController) gin.Handl
 }
 func DeleteWeekInCourse(courseController *controller.CourseController) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		middlewares.PendidikAdminAuth()
 		result, err := courseController.DeleteWeekInCourse(ctx)
 		if err != nil {
 			utils.ErrorResponse(ctx, err.Error(), nil)
