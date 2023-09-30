@@ -38,7 +38,7 @@ func CourseRoutes(api *gin.RouterGroup, db *gorm.DB) {
 		})
 		courseList.GET("/", GetCourseList(courseController))
 		courseList.POST("/", AddCourse(courseController))
-		courseList.PATCH("/:id", AddWeekToCourse(courseController))
+		courseList.POST("/week/", AddWeekToCourse(courseController))
 	}
 }
 

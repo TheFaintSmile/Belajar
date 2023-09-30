@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/rumbel/belajar/internal/app/dto"
 	"github.com/rumbel/belajar/internal/app/models"
 	"github.com/rumbel/belajar/internal/app/service"
 )
@@ -16,7 +17,7 @@ func NewCourseController(service service.CourseService) *CourseController {
 	}
 }
 
-func (c *CourseController) GetCourseList(ctx *gin.Context, userLevel int) ([]models.Course, error) {
+func (c *CourseController) GetCourseList(ctx *gin.Context, userLevel int) ([]dto.CourseListResponse, error) {
 	courses, err := c.service.GetCourseList(userLevel)
 
 	if err != nil {
@@ -26,17 +27,17 @@ func (c *CourseController) GetCourseList(ctx *gin.Context, userLevel int) ([]mod
 	return courses, nil
 }
 
-func (c *CourseController) AddCourse(ctx *gin.Context) (models.Course, error) {
-	var course models.Course
+func (c *CourseController) AddCourse(ctx *gin.Context) (dto.AddCourseInput, error) {
+	var course dto.AddCourseInput
 
 	if err := ctx.ShouldBindJSON(&course); err != nil {
-		return models.Course{}, err
+		return dto.AddCourseInput{}, err
 	}
 
 	result, err := c.service.AddCourse(course)
 
 	if err != nil {
-		return models.Course{}, err
+		return dto.AddCourseInput{}, err
 	}
 
 	return result, nil
@@ -48,6 +49,10 @@ func (c *CourseController) AddWeekToCourse(ctx *gin.Context) (models.Week, error
 	if err := ctx.ShouldBindJSON(&week); err != nil {
 		return models.Week{}, err
 	}
+
+	occurrence, err := c.service.GetWeekOccurrence(week.CourseID)
+
+	week.WeekNumber = occurrence + 1
 
 	result, err := c.service.AddWeekToCourse(week)
 

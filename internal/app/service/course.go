@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/rumbel/belajar/internal/app/dto"
 	"github.com/rumbel/belajar/internal/app/models"
 	"github.com/rumbel/belajar/internal/app/repository"
 )
@@ -15,7 +16,7 @@ func NewCourseService(repository *repository.CourseRepository) *CourseService {
 	}
 }
 
-func (s *CourseService) GetCourseList(userLevel int) ([]models.Course, error) {
+func (s *CourseService) GetCourseList(userLevel int) ([]dto.CourseListResponse, error) {
 	courses, err := s.repository.GetCourseList(userLevel)
 
 	if err != nil {
@@ -25,11 +26,11 @@ func (s *CourseService) GetCourseList(userLevel int) ([]models.Course, error) {
 	return courses, nil
 }
 
-func (s *CourseService) AddCourse(course models.Course) (models.Course, error) {
+func (s *CourseService) AddCourse(course dto.AddCourseInput) (dto.AddCourseInput, error) {
 	result, err := s.repository.AddCourse(course)
 
 	if err != nil {
-		return models.Course{}, err
+		return dto.AddCourseInput{}, err
 	}
 
 	return result, nil
@@ -43,4 +44,14 @@ func (s *CourseService) AddWeekToCourse(week models.Week) (models.Week, error) {
 	}
 
 	return result, nil
+}
+
+func (s *CourseService) GetWeekOccurrence(course_id uint) (int, error) {
+	occurrence, err := s.repository.GetWeekOccurrence(course_id)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return occurrence, nil
 }
