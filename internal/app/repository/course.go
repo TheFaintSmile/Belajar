@@ -98,9 +98,22 @@ func (repository *CourseRepository) DeleteCourse(id uint) error {
 	return nil
 }
 
-func (repository *CourseRepository) UpdateWeekInCourse(week uint) (int, error) {
+func (repository *CourseRepository) UpdateWeekInCourse(courseID uint, weekID uint, week dto.UpdateWeekInCourseInput) (dto.UpdateWeekInCourseInput, error) {
+	var week_instance models.Week
 
-	return 0, nil
+	if err := utils.DB.Where("course_id = ? AND week_number = ?", courseID, weekID).First(&week_instance).Error; err != nil {
+		return dto.UpdateWeekInCourseInput{}, err
+	}
+
+	updatedWeek := models.Week{
+		Name: week.Name,
+	}
+
+	if err := utils.DB.Model(&week_instance).Updates(&updatedWeek).Error; err != nil {
+		return dto.UpdateWeekInCourseInput{}, err
+	}
+
+	return week, nil
 }
 
 func (repository *CourseRepository) DeleteWeekInCourse(courseID uint, weekID uint) error {

@@ -123,8 +123,28 @@ func (c *CourseController) DeleteCourse(ctx *gin.Context) error {
 	return nil
 }
 
-func (c *CourseController) UpdateWeekInCourse(ctx *gin.Context) (models.Week, error) {
-	return models.Week{}, nil
+func (c *CourseController) UpdateWeekInCourse(ctx *gin.Context) (dto.UpdateWeekInCourseInput, error) {
+	courseID, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
+
+	if err != nil {
+		return dto.UpdateWeekInCourseInput{}, err
+	}
+
+	weekID, err := strconv.ParseUint(ctx.Param("weekID"), 10, 32)
+
+	if err != nil {
+		return dto.UpdateWeekInCourseInput{}, err
+	}	
+	
+	var week dto.UpdateWeekInCourseInput
+
+	if err := ctx.ShouldBindJSON(&week); err != nil {
+		return dto.UpdateWeekInCourseInput{}, err
+	}
+
+	result, err := c.service.UpdateWeekInCourse(uint(courseID), uint(weekID), week)
+
+	return result, nil
 }
 
 func (c *CourseController) DeleteWeekInCourse(ctx *gin.Context) error {

@@ -86,14 +86,14 @@ func (s *CourseService) DeleteCourse(course_id uint) error {
 	return nil
 }
 
-func (s *CourseService) UpdateWeekInCourse(week uint) (int, error) {
-	occurrence, err := s.repository.UpdateWeekInCourse(week)
+func (s *CourseService) UpdateWeekInCourse(courseID uint, weekID uint, week dto.UpdateWeekInCourseInput) (dto.UpdateWeekInCourseInput, error) {
+	res, err := s.repository.UpdateWeekInCourse(courseID, weekID, week)
 
 	if err != nil {
-		return 0, err
+		return dto.UpdateWeekInCourseInput{}, err
 	}
 
-	return occurrence, nil
+	return res, nil
 }
 
 func (s *CourseService) DeleteWeekInCourse(courseID uint, week uint) error {
