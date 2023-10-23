@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"mime/multipart"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -134,8 +135,8 @@ func (c *CourseController) UpdateWeekInCourse(ctx *gin.Context) (dto.UpdateWeekI
 
 	if err != nil {
 		return dto.UpdateWeekInCourseInput{}, err
-	}	
-	
+	}
+
 	var week dto.UpdateWeekInCourseInput
 
 	if err := ctx.ShouldBindJSON(&week); err != nil {
@@ -143,6 +144,10 @@ func (c *CourseController) UpdateWeekInCourse(ctx *gin.Context) (dto.UpdateWeekI
 	}
 
 	result, err := c.service.UpdateWeekInCourse(uint(courseID), uint(weekID), week)
+
+	if err != nil {
+		return dto.UpdateWeekInCourseInput{}, err
+	}
 
 	return result, nil
 }
@@ -167,4 +172,38 @@ func (c *CourseController) DeleteWeekInCourse(ctx *gin.Context) error {
 	}
 
 	return nil
+}
+
+func (c *CourseController) AddModuleToCourse(ctx *gin.Context) (dto.AddModuleToCourse, error) {
+	courseID, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
+
+	if err != nil {
+		return dto.AddModuleToCourse{}, err
+	}
+
+	weekID, err := strconv.ParseUint(ctx.Param("weekID"), 10, 32)
+
+	if err != nil {
+		return dto.AddModuleToCourse{}, err
+	}
+
+	var module dto.AddModuleToCourse
+
+	if err := ctx.ShouldBindJSON(&module); err != nil {
+		return dto.AddModuleToCourse{}, err
+	}
+
+	var file *multipart.FileHeader = nil
+
+	if module.Type == models.ModuleTypeFile {
+		file, err = ctx.FormFile("content")
+
+		if err != nil {
+			return dto.AddModuleToCourse{}, err
+		}
+	}
+
+	result, err := c.service.AddModuleToCourse(uint(courseID), uint(weekID), module, file)
+
+	return result, nil
 }

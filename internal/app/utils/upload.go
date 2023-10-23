@@ -2,6 +2,7 @@ package utils
 
 import (
 	"context"
+	"mime/multipart"
 	"time"
 
 	"github.com/cloudinary/cloudinary-go/v2"
@@ -9,19 +10,30 @@ import (
 	config "github.com/rumbel/belajar/internal/config"
 )
 
-func UploadFile(input interface{}) (string, error) {
-    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-    defer cancel()
-    //create cloudinary instance
-    cld, err := cloudinary.NewFromParams(config.EnvCloudName(), config.EnvCloudAPIKey(), config.EnvCloudAPISecret())
-    if err != nil {
-        return "", err
-    }
-    //upload file
-    uploadParam, err := cld.Upload.Upload(ctx, input, uploader.UploadParams{Folder: config.EnvCloudUploadFolder()})
+func UploadFile(fileHeader *multipart.FileHeader) (string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
-    if err != nil {
-        return "", err
-    }
-    return uploadParam.SecureURL, nil
+	// Open the file
+	file, err := fileHeader.Open()
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+
+	// Create Cloudinary instance
+	cld, err := cloudinary.NewFromParams(config.EnvCloudName(), config.EnvCloudAPIKey(), config.EnvCloudAPISecret())
+	if err != nil {
+		return "", err
+	}
+
+	resp, err := cld.Upload.Upload(ctx, fileHeader, uploader.UploadParams {
+        PublicID: fileHeader.Filename,
+    })
+
+	if err != nil {
+		return "", err
+	}
+
+	return resp.SecureURL, nil
 }

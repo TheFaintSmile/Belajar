@@ -1,6 +1,8 @@
 package service
 
 import (
+	"mime/multipart"
+
 	"github.com/rumbel/belajar/internal/app/dto"
 	"github.com/rumbel/belajar/internal/app/models"
 	"github.com/rumbel/belajar/internal/app/repository"
@@ -96,12 +98,26 @@ func (s *CourseService) UpdateWeekInCourse(courseID uint, weekID uint, week dto.
 	return res, nil
 }
 
-func (s *CourseService) DeleteWeekInCourse(courseID uint, week uint) error {
-	err := s.repository.DeleteWeekInCourse(courseID, week)
+func (s *CourseService) DeleteWeekInCourse(courseID uint, weekID uint) error {
+	err := s.repository.DeleteWeekInCourse(courseID, weekID)
 
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func (s *CourseService) AddModuleToCourse(courseID uint, weekID uint, module dto.AddModuleToCourse, file *multipart.FileHeader) (dto.AddModuleToCourse, error) {
+	if(file != nil) {
+		content, err := 
+	}
+
+	res, err := s.repository.AddModuleToCourse(courseID, weekID, module)
+
+	if err != nil {
+		return dto.AddModuleToCourse{}, err
+	}
+
+	return res, nil
 }
