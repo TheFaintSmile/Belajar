@@ -13,3 +13,9 @@ type AddCourseInput struct {
 	Lecturer string `json:"lecturer" binding:"required"`
 	LevelID  uint   `json:"level_id" gorm:"foreign_key" binding:"required"`
 }
+
+type UpdateCourseInformationInput struct {
+	Name     string `json:"name" binding:"required"`
+	Lecturer string `json:"lecturer" binding:"required"`
+	LevelID  uint   `json:"level_id" gorm:"foreign_key" binding:"required"`
+}

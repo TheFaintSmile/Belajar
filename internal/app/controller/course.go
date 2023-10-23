@@ -85,11 +85,29 @@ func (c *CourseController) AddWeekToCourse(ctx *gin.Context) (models.Week, error
 	return result, nil
 }
 
-func (c *CourseController) UpdateCourseInformation(ctx *gin.Context) (models.Course, error) {
-	return models.Course{}, nil
+func (c *CourseController) UpdateCourseInformation(ctx *gin.Context) (dto.UpdateCourseInformationInput, error) {
+	courseID, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
+
+	if err != nil {
+		return dto.UpdateCourseInformationInput{}, err
+	}
+
+	var course dto.UpdateCourseInformationInput
+
+	if err := ctx.ShouldBindJSON(&course); err != nil {
+		return dto.UpdateCourseInformationInput{}, err
+	}
+
+	result, err := c.service.UpdateCourseInformation(uint(courseID), course)
+
+	if err != nil {
+		return dto.UpdateCourseInformationInput{}, err
+	}
+
+	return result, nil
 }
 
-func (c *CourseController) DeleteCourse(ctx *gin.Context) (error) {
+func (c *CourseController) DeleteCourse(ctx *gin.Context) error {
 	courseID, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
 
 	if err != nil {
@@ -97,7 +115,7 @@ func (c *CourseController) DeleteCourse(ctx *gin.Context) (error) {
 	}
 
 	err = c.service.DeleteCourse(uint(courseID))
-	
+
 	if err != nil {
 		return err
 	}
@@ -109,7 +127,12 @@ func (c *CourseController) UpdateWeekInCourse(ctx *gin.Context) (models.Week, er
 	return models.Week{}, nil
 }
 
-func (c *CourseController) DeleteWeekInCourse(ctx *gin.Context) (error) {
+func (c *CourseController) DeleteWeekInCourse(ctx *gin.Context) error {
+	courseID, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
+
+	if err != nil {
+		return err
+	}
 
 	weekID, err := strconv.ParseUint(ctx.Param("weekID"), 10, 32)
 
@@ -117,7 +140,7 @@ func (c *CourseController) DeleteWeekInCourse(ctx *gin.Context) (error) {
 		return err
 	}
 
-	err = c.service.DeleteWeekInCourse(uint(weekID))
+	err = c.service.DeleteWeekInCourse(uint(courseID), uint(weekID))
 
 	if err != nil {
 		return err
