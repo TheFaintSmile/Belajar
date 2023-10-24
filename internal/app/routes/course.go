@@ -55,7 +55,7 @@ func CourseRoutes(api *gin.RouterGroup, db *gorm.DB) {
 	moduleList := api.Group("/module")
 	{
 		moduleList.DELETE("/material/:id/", DeleteMaterialFromCourse(courseController))
-		// moduleList.DELETE("/task/:id/", DeleteTaskFromCourse(courseController))
+		moduleList.DELETE("/task/:id/", DeleteTaskFromCourse(courseController))
 	}
 }
 
@@ -204,6 +204,17 @@ func AddModuleToCourse(courseController *controller.CourseController) gin.Handle
 func DeleteMaterialFromCourse(courseController *controller.CourseController) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		err := courseController.DeleteMaterialFromCourse(ctx)
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
+		utils.SuccessResponse(ctx, "Sucessfully Deleted Material", nil)
+	}
+}
+
+func DeleteTaskFromCourse(courseController *controller.CourseController) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		err := courseController.DeleteTaskFromCourse(ctx)
 		if err != nil {
 			utils.ErrorResponse(ctx, err.Error(), nil)
 			return

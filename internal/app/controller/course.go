@@ -230,3 +230,19 @@ func (c *CourseController) DeleteMaterialFromCourse(ctx *gin.Context) error {
 
 	return nil
 }
+
+func (c *CourseController) DeleteTaskFromCourse(ctx *gin.Context) error {
+	taskID, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
+
+	if err != nil {
+		return err
+	}
+
+	err = c.service.DeleteTaskFromCourse(uint(taskID))
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

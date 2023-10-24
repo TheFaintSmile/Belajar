@@ -140,7 +140,17 @@ func (s *CourseService) AddModuleToCourse(courseID uint, weekID uint, module dto
 }
 
 func (s *CourseService) DeleteMaterialFromCourse(materialD uint) error {
-	err := s.repository.DeleteCourse(materialD)
+	err := s.repository.DeleteMaterialFromCourse(materialD)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *CourseService) DeleteTaskFromCourse(taskID uint) error {
+	err := s.repository.DeleteTaskFromCourse(taskID)
 
 	if err != nil {
 		return err

@@ -177,3 +177,17 @@ func (repository *CourseRepository) DeleteMaterialFromCourse(materialID uint) er
 
 	return nil
 }
+
+func (repository *CourseRepository) DeleteTaskFromCourse(taskID uint) error {
+	var task models.Task
+
+	if err := utils.DB.First(&task, taskID).Error; err != nil {
+		return err
+	}
+
+	if err := utils.DB.Delete(&task).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
