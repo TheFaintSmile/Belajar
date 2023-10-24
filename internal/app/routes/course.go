@@ -54,6 +54,7 @@ func CourseRoutes(api *gin.RouterGroup, db *gorm.DB) {
 
 	moduleList := api.Group("/module")
 	{
+		moduleList.Use(middlewares.PendidikAdminAuth())
 		moduleList.DELETE("/material/:id/", DeleteMaterialFromCourse(courseController))
 		moduleList.DELETE("/task/:id/", DeleteTaskFromCourse(courseController))
 	}
