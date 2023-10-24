@@ -131,9 +131,9 @@ func (repository *CourseRepository) DeleteWeekInCourse(courseID uint, weekID uin
 }
 
 func (repository *CourseRepository) AddModuleToCourse(courseID uint, weekID uint, module dto.AddModuleToCourse) (dto.AddModuleToCourse, error) {
-	var week_instance models.Week
+	var weekInstance models.Week
 
-	if err := utils.DB.Where("course_id = ? AND week_number = ?", courseID, weekID).First(&week_instance).Error; err != nil {
+	if err := utils.DB.Where("course_id = ? AND week_number = ?", courseID, weekID).First(&weekInstance).Error; err != nil {
 		return dto.AddModuleToCourse{}, err
 	}
 
@@ -143,7 +143,7 @@ func (repository *CourseRepository) AddModuleToCourse(courseID uint, weekID uint
 			Description: module.Description,
 			Type:        module.Type,
 			Content:     module.Content,
-			WeekID:      week_instance.ID,
+			WeekID:      weekInstance.ID,
 		}
 		if err := utils.DB.Create(&newMaterial).Error; err != nil {
 			return dto.AddModuleToCourse{}, err
@@ -154,7 +154,7 @@ func (repository *CourseRepository) AddModuleToCourse(courseID uint, weekID uint
 			Description: module.Description,
 			Type:        module.Type,
 			Content:     module.Content,
-			WeekID:      week_instance.ID,
+			WeekID:      weekInstance.ID,
 		}
 		if err := utils.DB.Create(&newTask).Error; err != nil {
 			return dto.AddModuleToCourse{}, err
