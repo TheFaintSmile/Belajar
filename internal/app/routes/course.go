@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/rumbel/belajar/internal/app/controller"
@@ -183,11 +185,12 @@ func DeleteWeekInCourse(courseController *controller.CourseController) gin.Handl
 
 func AddModuleToCourse(courseController *controller.CourseController) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		fmt.Println("masuk")
 		result, err := courseController.AddModuleToCourse(ctx)
 		if err != nil {
 			utils.ErrorResponse(ctx, err.Error(), nil)
 			return
 		}
-		utils.SuccessResponse(ctx, "Successfully Updated Week Information", result)
+		utils.SuccessResponse(ctx, "Sucessfully Added Module", result)
 	}
 }

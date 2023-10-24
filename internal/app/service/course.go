@@ -1,7 +1,7 @@
 package service
 
 import (
-	"mime/multipart"
+	"errors"
 
 	"github.com/rumbel/belajar/internal/app/dto"
 	"github.com/rumbel/belajar/internal/app/models"
@@ -109,20 +109,32 @@ func (s *CourseService) DeleteWeekInCourse(courseID uint, weekID uint) error {
 	return nil
 }
 
-func (s *CourseService) AddModuleToCourse(courseID uint, weekID uint, module dto.AddModuleToCourse, file *multipart.FileHeader) (dto.AddModuleToCourse, error) {
-	if(file != nil) {
-		content, err := utils.UploadFile(file)
+func (s *CourseService) AddModuleToCourse(courseID uint, weekID uint, module dto.AddModuleToCourse) (dto.AddModuleToCourse, error) {
+	if err := utils.IsValidCategory(&module); err == nil {
+		if err := utils.IsValidModuleType(&module); err == nil {
+			if module.Type == models.ModuleTypeFile {
+				if !(module.File != nil) {
+					return dto.AddModuleToCourse{}, errors.New("file is required")
+				}
+				
+				content, err := utils.UploadFile(module.File)
+				if err != nil {
+					return dto.AddModuleToCourse{}, err
+				}
+				module.Content = content
+			}
+		} else {
+			return dto.AddModuleToCourse{}, err
+		}
+
+		res, err := s.repository.AddModuleToCourse(courseID, weekID, module)
+
 		if err != nil {
 			return dto.AddModuleToCourse{}, err
 		}
-		module.Content = content
-	}
 
-	res, err := s.repository.AddModuleToCourse(courseID, weekID, module)
-
-	if err != nil {
+		return res, nil
+	} else {
 		return dto.AddModuleToCourse{}, err
 	}
-
-	return res, nil
 }

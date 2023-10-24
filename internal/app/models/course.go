@@ -6,7 +6,7 @@ type ModuleType string
 
 const (
 	ModuleTypeFile  ModuleType = "file"
-	ModuleTypeLinks ModuleType = "links"
+	ModuleTypeLinks ModuleType = "link"
 	ModuleTypeVideo ModuleType = "video"
 )
 

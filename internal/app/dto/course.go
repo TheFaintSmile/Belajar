@@ -1,6 +1,10 @@
 package dto
 
-import models "github.com/rumbel/belajar/internal/app/models"
+import (
+	"mime/multipart"
+
+	models "github.com/rumbel/belajar/internal/app/models"
+)
 
 type Category string
 
@@ -34,10 +38,10 @@ type UpdateWeekInCourseInput struct {
 }
 
 type AddModuleToCourse struct {
-	Category    Category          `json:"category" binding:"required"`
-	Name        string            `json:"name" binding:"required"`
-	Description string            `json:"description"`
-	Type        models.ModuleType `json:"type" binding:"required"`
-	Content     string            `json:"content" binding:"required"`
-	WeekID      uint              `json:"week_id" gorm:"foreign_key" binding:"required"`
+	Category    Category          `form:"category" binding:"required"`
+	Name        string            `form:"name" binding:"required"`
+	Description string            `form:"description"`
+	Type        models.ModuleType `form:"type" binding:"required"`
+	Content     string            `form:"content"`
+	File        multipart.File    `form:"file"`
 }

@@ -162,14 +162,4 @@ func (repository *CourseRepository) AddModuleToCourse(courseID uint, weekID uint
 	}
 
 	return module, nil
-	// newCourse := models.Course{
-	// 	Name:     course.Name,
-	// 	Lecturer: course.Lecturer,
-	// 	LevelID:  course.LevelID,
-	// }
-	// if err := utils.DB.Create(&newCourse).Error; err != nil {
-	// 	return dto.AddCourseInput{}, err
-	// }
-
-	// return course, nil
 }

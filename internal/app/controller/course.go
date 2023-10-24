@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"mime/multipart"
+	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -187,23 +187,30 @@ func (c *CourseController) AddModuleToCourse(ctx *gin.Context) (dto.AddModuleToC
 		return dto.AddModuleToCourse{}, err
 	}
 
-	var module dto.AddModuleToCourse
+	fmt.Println(courseID)
+	fmt.Println(weekID)
 
-	if err := ctx.ShouldBindJSON(&module); err != nil {
+	module := dto.AddModuleToCourse{
+		Category:    dto.Category(ctx.PostForm("category")),
+		Name:        ctx.PostForm("name"),
+		Type:        models.ModuleType(ctx.PostForm("type")),
+		Content:     ctx.PostForm("content"),
+		Description: ctx.PostForm("description"),
+	}
+	fmt.Println(module)
+
+	file, _, err := ctx.Request.FormFile("file")
+	if err != nil {
 		return dto.AddModuleToCourse{}, err
 	}
 
-	var file *multipart.FileHeader = nil
+	module.File = file
 
-	if module.Type == models.ModuleTypeFile {
-		file, err = ctx.FormFile("content")
+	result, err := c.service.AddModuleToCourse(uint(courseID), uint(weekID), module)
 
-		if err != nil {
-			return dto.AddModuleToCourse{}, err
-		}
+	if err != nil {
+		return dto.AddModuleToCourse{}, err
 	}
-
-	result, err := c.service.AddModuleToCourse(uint(courseID), uint(weekID), module, file)
 
 	return result, nil
 }
