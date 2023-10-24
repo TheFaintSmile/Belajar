@@ -34,7 +34,6 @@ type Material struct {
 	Type        ModuleType `json:"type" binding:"required"`
 	Content     string     `json:"content" binding:"required"`
 	WeekID      uint       `json:"week_id" gorm:"foreign_key" binding:"required"`
-	IsCompleted bool       `json:"is_completed"`
 }
 
 type Task struct {
@@ -44,5 +43,4 @@ type Task struct {
 	Type        ModuleType `json:"type" binding:"required"`
 	Content     string     `json:"content" binding:"required"`
 	WeekID      uint       `json:"week_id" gorm:"foreign_key" binding:"required"`
-	IsCompleted bool       `json:"is_completed"`
 }
