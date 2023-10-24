@@ -34,7 +34,7 @@ type UpdateWeekInCourseInput struct {
 }
 
 type AddModuleToCourse struct {
-	Category    string            `json:"category" binding:"required"`
+	Category    Category          `json:"category" binding:"required"`
 	Name        string            `json:"name" binding:"required"`
 	Description string            `json:"description"`
 	Type        models.ModuleType `json:"type" binding:"required"`

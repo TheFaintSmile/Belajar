@@ -6,6 +6,7 @@ import (
 	"github.com/rumbel/belajar/internal/app/dto"
 	"github.com/rumbel/belajar/internal/app/models"
 	"github.com/rumbel/belajar/internal/app/repository"
+	"github.com/rumbel/belajar/internal/app/utils"
 )
 
 type CourseService struct {
@@ -110,7 +111,11 @@ func (s *CourseService) DeleteWeekInCourse(courseID uint, weekID uint) error {
 
 func (s *CourseService) AddModuleToCourse(courseID uint, weekID uint, module dto.AddModuleToCourse, file *multipart.FileHeader) (dto.AddModuleToCourse, error) {
 	if(file != nil) {
-		content, err := 
+		content, err := utils.UploadFile(file)
+		if err != nil {
+			return dto.AddModuleToCourse{}, err
+		}
+		module.Content = content
 	}
 
 	res, err := s.repository.AddModuleToCourse(courseID, weekID, module)

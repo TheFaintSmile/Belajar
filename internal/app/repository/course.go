@@ -129,3 +129,47 @@ func (repository *CourseRepository) DeleteWeekInCourse(courseID uint, weekID uin
 
 	return nil
 }
+
+func (repository *CourseRepository) AddModuleToCourse(courseID uint, weekID uint, module dto.AddModuleToCourse) (dto.AddModuleToCourse, error) {
+	var week_instance models.Week
+
+	if err := utils.DB.Where("course_id = ? AND week_number = ?", courseID, weekID).First(&week_instance).Error; err != nil {
+		return dto.AddModuleToCourse{}, err
+	}
+
+	if module.Category == dto.CategoryMaterial {
+		newMaterial := models.Material{
+			Name:        module.Name,
+			Description: module.Description,
+			Type:        module.Type,
+			Content:     module.Content,
+			WeekID:      week_instance.ID,
+		}
+		if err := utils.DB.Create(&newMaterial).Error; err != nil {
+			return dto.AddModuleToCourse{}, err
+		}
+	} else {
+		newTask := models.Task{
+			Name:        module.Name,
+			Description: module.Description,
+			Type:        module.Type,
+			Content:     module.Content,
+			WeekID:      week_instance.ID,
+		}
+		if err := utils.DB.Create(&newTask).Error; err != nil {
+			return dto.AddModuleToCourse{}, err
+		}
+	}
+
+	return module, nil
+	// newCourse := models.Course{
+	// 	Name:     course.Name,
+	// 	Lecturer: course.Lecturer,
+	// 	LevelID:  course.LevelID,
+	// }
+	// if err := utils.DB.Create(&newCourse).Error; err != nil {
+	// 	return dto.AddCourseInput{}, err
+	// }
+
+	// return course, nil
+}
