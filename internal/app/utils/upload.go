@@ -12,7 +12,7 @@ import (
 
 func UploadFile(fileHeader interface{}) (string, error) {
 	fmt.Println("masuk kesini errornya")
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 40*time.Second)
 	defer cancel()
 
 	//create cloudinary instance
