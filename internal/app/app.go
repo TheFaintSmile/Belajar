@@ -86,7 +86,7 @@ func (a *App) Run() {
 	a.router.SetTrustedProxies(nil)
 	serverPort := fmt.Sprintf(":%s", a.config.ServerPort)
 	routes.AuthRoutes(api, db)
-	routes.CourseRoutes(api, db)
+	routes.CourseAndModuleRoutes(api, db)
 
 	a.router.Run(serverPort)
 }

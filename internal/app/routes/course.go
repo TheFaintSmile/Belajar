@@ -27,7 +27,7 @@ var (
 	}
 )
 
-func CourseRoutes(api *gin.RouterGroup, db *gorm.DB) {
+func CourseAndModuleRoutes(api *gin.RouterGroup, db *gorm.DB) {
 	courseController := controller.NewCourseController(*courseService)
 
 	courseList := api.Group("/course")
