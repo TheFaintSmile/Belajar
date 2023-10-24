@@ -54,20 +54,20 @@ func (repository *CourseRepository) AddWeekToCourse(week models.Week) (models.We
 	return week, nil
 }
 
-func (repository *CourseRepository) GetWeekOccurrence(course_id uint) (int, error) {
+func (repository *CourseRepository) GetWeekOccurrence(courseID uint) (int, error) {
 	var occurrence int64
 
-	if err := utils.DB.Model(&models.Week{}).Where("course_id = ?", course_id).Count(&occurrence).Error; err != nil {
+	if err := utils.DB.Model(&models.Week{}).Where("course_id = ?", courseID).Count(&occurrence).Error; err != nil {
 		return 0, err
 	}
 
 	return int(occurrence), nil
 }
 
-func (repository *CourseRepository) UpdateCourseInformation(course_id uint, course dto.UpdateCourseInformationInput) (dto.UpdateCourseInformationInput, error) {
-	var course_instance models.Course
+func (repository *CourseRepository) UpdateCourseInformation(courseID uint, course dto.UpdateCourseInformationInput) (dto.UpdateCourseInformationInput, error) {
+	var courseInstance models.Course
 
-	if err := utils.DB.First(&course_instance, course_id).Error; err != nil {
+	if err := utils.DB.First(&courseInstance, courseID).Error; err != nil {
 		return dto.UpdateCourseInformationInput{}, err
 	}
 
@@ -77,7 +77,7 @@ func (repository *CourseRepository) UpdateCourseInformation(course_id uint, cour
 		LevelID:  course.LevelID,
 	}
 
-	if err := utils.DB.Model(&course_instance).Updates(&updatedCourse).Error; err != nil {
+	if err := utils.DB.Model(&courseInstance).Updates(&updatedCourse).Error; err != nil {
 		return dto.UpdateCourseInformationInput{}, err
 	}
 
@@ -99,9 +99,9 @@ func (repository *CourseRepository) DeleteCourse(id uint) error {
 }
 
 func (repository *CourseRepository) UpdateWeekInCourse(courseID uint, weekID uint, week dto.UpdateWeekInCourseInput) (dto.UpdateWeekInCourseInput, error) {
-	var week_instance models.Week
+	var weekInstance models.Week
 
-	if err := utils.DB.Where("course_id = ? AND week_number = ?", courseID, weekID).First(&week_instance).Error; err != nil {
+	if err := utils.DB.Where("course_id = ? AND week_number = ?", courseID, weekID).First(&weekInstance).Error; err != nil {
 		return dto.UpdateWeekInCourseInput{}, err
 	}
 
@@ -109,7 +109,7 @@ func (repository *CourseRepository) UpdateWeekInCourse(courseID uint, weekID uin
 		Name: week.Name,
 	}
 
-	if err := utils.DB.Model(&week_instance).Updates(&updatedWeek).Error; err != nil {
+	if err := utils.DB.Model(&weekInstance).Updates(&updatedWeek).Error; err != nil {
 		return dto.UpdateWeekInCourseInput{}, err
 	}
 
@@ -162,4 +162,18 @@ func (repository *CourseRepository) AddModuleToCourse(courseID uint, weekID uint
 	}
 
 	return module, nil
+}
+
+func (repository *CourseRepository) DeleteMaterialFromCourse(materialID uint) error {
+	var material models.Material
+
+	if err := utils.DB.First(&material, materialID).Error; err != nil {
+		return err
+	}
+
+	if err := utils.DB.Delete(&material).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

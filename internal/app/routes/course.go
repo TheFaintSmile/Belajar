@@ -51,6 +51,12 @@ func CourseRoutes(api *gin.RouterGroup, db *gorm.DB) {
 		courseList.POST("/week/", AddWeekToCourse(courseController))
 		courseList.POST("/:id/week/:weekID/", AddModuleToCourse(courseController))
 	}
+
+	moduleList := api.Group("/module")
+	{
+		moduleList.DELETE("/material/:id/", DeleteMaterialFromCourse(courseController))
+		// moduleList.DELETE("/task/:id/", DeleteTaskFromCourse(courseController))
+	}
 }
 
 func GetCourseList(courseController *controller.CourseController) gin.HandlerFunc {
@@ -192,5 +198,16 @@ func AddModuleToCourse(courseController *controller.CourseController) gin.Handle
 			return
 		}
 		utils.SuccessResponse(ctx, "Sucessfully Added Module", result)
+	}
+}
+
+func DeleteMaterialFromCourse(courseController *controller.CourseController) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		err := courseController.DeleteMaterialFromCourse(ctx)
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
+		utils.SuccessResponse(ctx, "Sucessfully Deleted Material", nil)
 	}
 }

@@ -59,8 +59,8 @@ func (s *CourseService) AddWeekToCourse(week models.Week) (models.Week, error) {
 	return result, nil
 }
 
-func (s *CourseService) GetWeekOccurrence(course_id uint) (int, error) {
-	occurrence, err := s.repository.GetWeekOccurrence(course_id)
+func (s *CourseService) GetWeekOccurrence(courseID uint) (int, error) {
+	occurrence, err := s.repository.GetWeekOccurrence(courseID)
 
 	if err != nil {
 		return 0, err
@@ -69,8 +69,8 @@ func (s *CourseService) GetWeekOccurrence(course_id uint) (int, error) {
 	return occurrence, nil
 }
 
-func (s *CourseService) UpdateCourseInformation(course_id uint, course dto.UpdateCourseInformationInput) (dto.UpdateCourseInformationInput, error) {
-	course, err := s.repository.UpdateCourseInformation(course_id, course)
+func (s *CourseService) UpdateCourseInformation(courseID uint, course dto.UpdateCourseInformationInput) (dto.UpdateCourseInformationInput, error) {
+	course, err := s.repository.UpdateCourseInformation(courseID, course)
 
 	if err != nil {
 		return dto.UpdateCourseInformationInput{}, err
@@ -79,8 +79,8 @@ func (s *CourseService) UpdateCourseInformation(course_id uint, course dto.Updat
 	return course, nil
 }
 
-func (s *CourseService) DeleteCourse(course_id uint) error {
-	err := s.repository.DeleteCourse(course_id)
+func (s *CourseService) DeleteCourse(courseID uint) error {
+	err := s.repository.DeleteCourse(courseID)
 
 	if err != nil {
 		return err
@@ -137,4 +137,14 @@ func (s *CourseService) AddModuleToCourse(courseID uint, weekID uint, module dto
 	} else {
 		return dto.AddModuleToCourse{}, err
 	}
+}
+
+func (s *CourseService) DeleteMaterialFromCourse(materialD uint) error {
+	err := s.repository.DeleteCourse(materialD)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

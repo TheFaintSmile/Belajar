@@ -214,3 +214,19 @@ func (c *CourseController) AddModuleToCourse(ctx *gin.Context) (dto.AddModuleToC
 
 	return result, nil
 }
+
+func (c *CourseController) DeleteMaterialFromCourse(ctx *gin.Context) error {
+	materialID, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
+
+	if err != nil {
+		return err
+	}
+
+	err = c.service.DeleteMaterialFromCourse(uint(materialID))
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
