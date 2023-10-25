@@ -16,26 +16,33 @@ func NewUserRepository() *UserRepository {
 }
 
 func (ur *UserRepository) SaveUser(user *models.User) (*models.User, error) {
-	validLevels := []models.UserLevel{models.LevelSD1, models.LevelSD2, models.LevelSD3, models.LevelSD4, models.LevelSD5, models.LevelSD6, models.LevelSMP, models.LevelSMA}
-	isValidLevel := false
-	for _, level := range validLevels {
-		if user.Level == level {
-			isValidLevel = true
-			break
-		}
-	}
-	if !isValidLevel {
-		return nil, fmt.Errorf("Invalid user level")
-	}
 	err := utils.DB.Create(user).Error
 	if err != nil {
 		return &models.User{}, err
 	}
+	if user.Role == models.RoleSiswa {
+		siswa := models.Siswa{}
+		siswa.Email = user.Email
+		err = utils.DB.Create(&siswa).Error
+		if err != nil {
+			return &models.User{}, err
+		}
+	} else if user.Role == models.RolePendidik {
+		pendidik := models.Pendidik{}
+		pendidik.Email = user.Email
+		err = utils.DB.Create(&pendidik).Error
+		if err != nil {
+			return &models.User{}, err
+		}
+	} else if user.Role == models.RoleAdmin {
+		admin := models.Admin{}
+		admin.Email = user.Email
+		err = utils.DB.Create(&admin).Error
+		if err != nil {
+			return &models.User{}, err
+		}
+	}
 	return user, nil
-}
-
-func (ur *UserRepository) VerifyPassword(password, hashedPassword string) error {
-	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
 
 func (ur *UserRepository) LoginCheck(email, password string) (string, error) {
@@ -45,11 +52,11 @@ func (ur *UserRepository) LoginCheck(email, password string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("user not found")
 	}
-	err = ur.VerifyPassword(password, user.Password)
+	err = utils.VerifyPassword(password, user.Password)
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
 		return "", fmt.Errorf("invalid login credentials")
 	}
-	token, err := middlewares.GenerateToken(user.ID)
+	token, err := middlewares.GenerateToken(user.ID, string(user.Role))
 	if err != nil {
 		return "", err
 	}
@@ -59,5 +66,13 @@ func (ur *UserRepository) LoginCheck(email, password string) (string, error) {
 func (ur *UserRepository) CheckEmailExists(email string) bool {
 	var u models.User
 	err := utils.DB.Model(&models.User{}).Where("email = ?", email).Take(&u).Error
-	return err == nil;
+	return err == nil
+}
+
+func (ur *UserRepository) GetUserInfo(userID uint) (*models.User, error) {
+	var user models.User
+	if err := utils.DB.First(&user, userID).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
 }

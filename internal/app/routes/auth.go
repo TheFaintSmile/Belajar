@@ -15,6 +15,7 @@ var (
 )
 
 func AuthRoutes(api *gin.RouterGroup, db *gorm.DB) {
+
 	authController := controller.NewAuthController(authService, db)
 
 	auth := api.Group("/auth")
@@ -26,14 +27,14 @@ func AuthRoutes(api *gin.RouterGroup, db *gorm.DB) {
 }
 
 func Register(authController controller.AuthController) gin.HandlerFunc {
-    return func(ctx *gin.Context) {
-        err := authController.Register(ctx)
-        if err != nil {
-            utils.ErrorResponse(ctx, err.Error(), nil)
-            return
-        }
-        utils.SuccessResponse(ctx, "Registration success", nil)
-    }
+	return func(ctx *gin.Context) {
+		err := authController.Register(ctx)
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
+		utils.SuccessResponse(ctx, "Registration success", nil)
+	}
 }
 
 func Login(authController controller.AuthController) gin.HandlerFunc {
@@ -48,17 +49,17 @@ func Login(authController controller.AuthController) gin.HandlerFunc {
 }
 
 func Credential(authController controller.AuthController) gin.HandlerFunc {
-    return func(ctx *gin.Context) {
-        userID, err := middlewares.ExtractTokenID(ctx)
-        if err != nil {
-            utils.ErrorResponse(ctx, err.Error(), nil)
-            return
-        }
-        userInfo, err := authController.GetUserInfo(userID)
-        if err != nil {
-            utils.ErrorResponse(ctx, err.Error(), nil)
-            return
-        }
-        utils.SuccessResponse(ctx, "User Info Retrieved", userInfo)
-    }
+	return func(ctx *gin.Context) {
+		userID, err := middlewares.ExtractTokenID(ctx)
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
+		userInfo, err := authController.GetUserInfo(userID)
+		if err != nil {
+			utils.ErrorResponse(ctx, err.Error(), nil)
+			return
+		}
+		utils.SuccessResponse(ctx, "User Info Retrieved", userInfo)
+	}
 }

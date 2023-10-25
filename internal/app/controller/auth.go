@@ -51,11 +51,7 @@ func (c *authController) Login(ctx *gin.Context) (string, error) {
 	if err != nil {
 		return "",err
 	}
-	u := models.User{}
-	u.Email = input.Email
-	u.Password = input.Password
-
-	token, err := c.service.Login(u)
+	token, err := c.service.Login(input)
 	if err != nil {
 		return "", err
 	}
@@ -63,11 +59,13 @@ func (c *authController) Login(ctx *gin.Context) (string, error) {
 }
 
 func (c *authController) GetUserInfo(userID uint) (*models.User, error) {
-	var user models.User
-	if err := c.db.First(&user, userID).Error; err != nil {
-		return nil, err
+	user, err := c.service.GetUserInfo(userID); 
+	
+	if err != nil {
+		return &models.User{}, err
 	}
-	return &user, nil
+
+	return user, nil
 }
 
 type authController struct {

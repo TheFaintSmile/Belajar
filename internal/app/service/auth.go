@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 
+	"github.com/rumbel/belajar/internal/app/dto"
 	"github.com/rumbel/belajar/internal/app/models"
 	"github.com/rumbel/belajar/internal/app/repository"
 	"github.com/rumbel/belajar/internal/app/utils"
@@ -10,7 +11,8 @@ import (
 
 type AuthService interface {
 	Register(models.User) (string, error)
-	Login(models.User) (string, error)
+	Login(dto.LoginInput) (string, error)
+	GetUserInfo(userID uint) (*models.User, error)
 }
 
 func (s *authService) Register(user models.User) (string, error) {
@@ -30,9 +32,23 @@ func (s *authService) Register(user models.User) (string, error) {
 	u.Age = user.Age
 	u.Email = user.Email
 	u.Password = user.Password
-	u.Level = user.Level
+	u.LevelID = user.LevelID
 
-	_, err := s.userRepository.SaveUser(&u)
+	u.Role = user.Role
+
+	if u.Role == models.RoleSiswa {
+		err := utils.IsValidLevel(&u)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	err := utils.HashingPassword(&u)
+	if err != nil {
+		return "", err
+	}
+
+	_, err = s.userRepository.SaveUser(&u)
 	if err != nil {
 		return "", err
 	}
@@ -40,14 +56,23 @@ func (s *authService) Register(user models.User) (string, error) {
 	return "success", nil
 }
 
-func (s *authService) Login(user models.User) (string, error) {
-	token, err := s.userRepository.LoginCheck(user.Email, user.Password)
+func (s *authService) Login(userInput dto.LoginInput) (string, error) {
+	token, err := s.userRepository.LoginCheck(userInput.Email, userInput.Password)
 	if err != nil {
 		return "", err
 	}
 	return token, nil
 }
 
+func (s *authService) GetUserInfo(userID uint) (*models.User, error) {
+	user, err := s.userRepository.GetUserInfo(userID)
+
+	if err != nil {
+		return &models.User{}, err
+	}
+
+	return user, nil
+}
 type authService struct {
 	userRepository *repository.UserRepository
 }
@@ -57,5 +82,3 @@ func NewAuthService(userRepository *repository.UserRepository) AuthService {
 		userRepository: userRepository,
 	}
 }
-
-

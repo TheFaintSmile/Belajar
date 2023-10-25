@@ -20,49 +20,56 @@ import (
 )
 
 type App struct {
-    api            *gin.RouterGroup
-    config         *config.Config
-    db             *gorm.DB
-    router         *gin.Engine
+	api    *gin.RouterGroup
+	config *config.Config
+	db     *gorm.DB
+	router *gin.Engine
 }
 
 func NewApp() *App {
-    config := config.LoadConfig()
+	config := config.LoadConfig()
 
-    err := godotenv.Load()
+	err := godotenv.Load()
 
-    if err != nil {
-        log.Fatal("\nError loading config: \n", err)
-    }
+	if err != nil {
+		log.Fatal("\nError loading config: \n", err)
+	}
 
-    if os.Getenv("NODE_ENV") == "development" {
-        gin.SetMode(gin.DebugMode)
-    } else {
-        gin.SetMode(gin.ReleaseMode)
-    }
+	if os.Getenv("NODE_ENV") == "development" {
+		gin.SetMode(gin.DebugMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+	}
 
-    // db, err := gorm.Open(config.DatabaseDriver, config.GetDSN())
-    // if err != nil {
-    //     log.Fatal("Error connecting to the database:", err)
-    // }
-    // db.AutoMigrate(&entity.User{})
-    utils.ConnectDB()
-    utils.DB.AutoMigrate(&models.User{})
-    // Serve Swagger documentation
+	// db, err := gorm.Open(config.DatabaseDriver, config.GetDSN())
+	// if err != nil {
+	//     log.Fatal("Error connecting to the database:", err)
+	// }
+	// db.AutoMigrate(&entity.User{})
+	utils.ConnectDB()
 
-    router := gin.Default()
-    router.Use(gin.Recovery())
-    router.Use(middlewares.LogRequest)
-    router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	db := utils.DB.AutoMigrate(&models.Level{}, &models.User{}, &models.Course{}, &models.Siswa{}, &models.Pendidik{}, &models.Admin{}, &models.Week{}, &models.Material{}, &models.Task{})
 
-    api := router.Group("/api")
+	if db.Error != nil {
+		panic(err)
+	}
 
-    return &App{
-        api:            api,
-        config:         config,
-        db:             utils.DB,
-        router:         router,
-    }
+	middlewares.InitializeLevelToDatabase(utils.DB)
+
+	// Serve Swagger documentation
+	router := gin.Default()
+	router.Use(gin.Recovery())
+	router.Use(middlewares.LogRequest)
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	api := router.Group("/api")
+
+	return &App{
+		api:    api,
+		config: config,
+		db:     utils.DB,
+		router: router,
+	}
 }
 
 func (a *App) Run() {
@@ -73,13 +80,13 @@ func (a *App) Run() {
 		ExposeHeaders:    []string{"*"},
 		AllowCredentials: true,
 	}))
+	api := a.api
+	db := a.db
+
 	a.router.SetTrustedProxies(nil)
 	serverPort := fmt.Sprintf(":%s", a.config.ServerPort)
-	routes.AuthRoutes(a.api, a.db)
+	routes.AuthRoutes(api, db)
+	routes.CourseAndModuleRoutes(api, db)
 
 	a.router.Run(serverPort)
 }
-
-// func (a *App) Close() {
-// 	a.db.Close()
-// }
