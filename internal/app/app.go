@@ -7,16 +7,22 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/joho/godotenv"
+	"github.com/rumbel/belajar/internal/app/middlewares"
+	"github.com/rumbel/belajar/internal/app/models"
 	"github.com/rumbel/belajar/internal/app/routes"
+	"github.com/rumbel/belajar/internal/app/utils"
 	"github.com/rumbel/belajar/internal/config"
-	// "github.com/jinzhu/gorm"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type App struct {
 	api    *gin.RouterGroup
 	config *config.Config
-	// db     *gorm.DB
+	db     *gorm.DB
 	router *gin.Engine
 }
 
@@ -35,21 +41,37 @@ func NewApp() *App {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	// db, err := gorm.Open(config.Database.Dialect, config.Database.URL)
+	// db, err := gorm.Open(config.DatabaseDriver, config.GetDSN())
+	// if err != nil {
+	//     log.Fatal("Error connecting to the database:", err)
+	// }
+	// db.AutoMigrate(&entity.User{})
+	utils.ConnectDB()
 
+	db := utils.DB.AutoMigrate(&models.Level{}, &models.User{}, &models.Course{}, &models.Siswa{}, &models.Pendidik{}, &models.Admin{}, &models.Week{}, &models.Material{}, &models.Task{})
+
+	if db.Error != nil {
+		panic(err)
+	}
+
+	middlewares.InitializeLevelToDatabase(utils.DB)
+
+	// Serve Swagger documentation
 	router := gin.Default()
 	router.Use(gin.Recovery())
+	router.Use(middlewares.LogRequest)
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	api := router.Group("/api")
 
 	return &App{
 		api:    api,
 		config: config,
-		// db:     db,
+		db:     utils.DB,
 		router: router,
 	}
 }
 
-// Start App
 func (a *App) Run() {
 	a.router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:3000"},
@@ -58,13 +80,13 @@ func (a *App) Run() {
 		ExposeHeaders:    []string{"*"},
 		AllowCredentials: true,
 	}))
+	api := a.api
+	db := a.db
+
 	a.router.SetTrustedProxies(nil)
 	serverPort := fmt.Sprintf(":%s", a.config.ServerPort)
-	routes.TestRoutes(a.api)
+	routes.AuthRoutes(api, db)
+	routes.CourseAndModuleRoutes(api, db)
 
 	a.router.Run(serverPort)
 }
-
-// func (a *App) Close() {
-// 	a.db.Close()
-// }
