@@ -27,7 +27,7 @@ _cgo_export.*.go
 
 # Other
 .DS_Store
-# .env
+.env
 
 # air
 tmp
