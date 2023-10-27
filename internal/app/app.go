@@ -58,6 +58,15 @@ func NewApp() *App {
 
 	// Serve Swagger documentation
 	router := gin.Default()
+
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{"*"},
+		AllowHeaders:     []string{"*"},
+		ExposeHeaders:    []string{"*"},
+		AllowCredentials: true,
+	}))
+
 	router.Use(gin.Recovery())
 	router.Use(middlewares.LogRequest)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -73,13 +82,6 @@ func NewApp() *App {
 }
 
 func (a *App) Run() {
-	a.router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"},
-		AllowMethods:     []string{"*"},
-		AllowHeaders:     []string{"*"},
-		ExposeHeaders:    []string{"*"},
-		AllowCredentials: true,
-	}))
 	api := a.api
 	db := a.db
 
